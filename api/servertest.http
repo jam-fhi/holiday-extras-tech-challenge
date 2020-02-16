@@ -1,3 +1,5 @@
 # RESTClient plugin https://github.com/Huachao/vscode-restclient
 
 POST http://localhost:3001/api/login
+email: tom@holextra.com
+password: password

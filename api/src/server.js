@@ -63,7 +63,7 @@ export default class APIServer {
 							req.headers.email,
 							req.headers.password
 						);
-						res.set('auth-token', token).sendStatus(HttpStatusCodes.OK);
+						res.json({ token }).sendStatus(HttpStatusCodes.OK);
 					} else {
 						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
 					}
