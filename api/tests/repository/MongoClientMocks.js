@@ -1,7 +1,3 @@
-const validFoundDocument = {
-	document: 'found'
-};
-
 const connect = jest.fn((url, options, callback) => {
 	callback(null, dbConn);
 });
@@ -49,6 +45,10 @@ const collectionFail = jest.fn(collection => {
 const dbFail = jest.fn(db => {
 	return { collection: collectionFail };
 });
+
+export const validFoundDocument = {
+	document: 'found'
+};
 
 export const MockMongoClient = { connect };
 export const MockMongoClientError = { connect: connectFail };
