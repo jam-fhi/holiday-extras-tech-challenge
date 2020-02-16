@@ -17,6 +17,35 @@ export default class APIServer {
 	}
 
 	async buildAPI() {
+		/**
+		 * @swagger
+		 *
+		 * /login:
+		 *   post:
+		 *     description: Login to the application
+		 *     produces:
+		 *       - application/json
+		 *     parameters:
+		 *       - name: email
+		 *         description: Email address to use for login.
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *       - name: password
+		 *         description: User's password.
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *     responses:
+		 *       200:
+		 *         description: login
+		 *       500:
+		 *         description: internal server error
+		 *       400:
+		 *         description: login details failed validation
+		 *       401:
+		 *         description: login details failed authentication
+		 */
 		await this.server.post(`/${BASE}/${LOGIN}`, async (req, res) => {
 			try {
 				if (
