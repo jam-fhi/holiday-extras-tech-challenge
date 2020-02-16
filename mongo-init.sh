@@ -13,5 +13,5 @@ if [ "$MONGO_INITDB_ROOT_USERNAME" ] && [ "$MONGO_INITDB_ROOT_PASSWORD" ]; then
       db: "$MONGO_DB"
     }]
   })
-  EOJS
+EOJS
 fi

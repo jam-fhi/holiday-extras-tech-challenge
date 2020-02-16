@@ -12,5 +12,12 @@ services:
     build: ./db-seed/
     links:
       - mongodb
+  holiday_api:
+    build: ./api/
+    ports:
+      - $API_PORT:$API_PORT
+    links:
+      - mongo_seed
+      - mongodb
 networks:
   webnet:

@@ -18,6 +18,10 @@ To run the application, everything will be built via dockerfiles, simply run thi
 
 `docker-compose up`
 
+It may require that the docker images are built.
+
+`docker-compose up --build`
+
 ### **Exit the application**
 
 To exit the application you can do a ctrl-c on the terminal that is running the application. It's worth doing docker-compose down to ensure everything has been cleaned up afterwords.

@@ -4,6 +4,7 @@
 	"description": "API wrapper for the mongo database on the Holiday extra technical challenge",
 	"main": "index.js",
 	"scripts": {
+		"start": "nodemon -r esm index.js",
 		"test": "./node_modules/.bin/jest --detectOpenHandles",
 		"coverage": "./node_modules/.bin/jest --coverage",
 		"lint": "./node_modules/.bin/eslint src/**"
@@ -12,8 +13,10 @@
 	"license": "ISC",
 	"dependencies": {
 		"dotenv": "^8.2.0",
+		"esm": "^3.2.25",
 		"express": "^4.17.1",
-		"http-status-codes": "^1.4.0"
+		"http-status-codes": "^1.4.0",
+		"nodemon": "^2.0.2"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.8.4",
