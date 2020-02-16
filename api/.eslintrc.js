@@ -17,7 +17,6 @@ module.exports = {
 		ecmaVersion: 2018,
 		sourceType: 'module'
 	},
-	plugins: ['react'],
 	rules: {
 		'eol-last': 2,
 		'no-irregular-whitespace': 2,
@@ -26,8 +25,6 @@ module.exports = {
 		'no-underscore-dangle': 0,
 		quotes: [2, 'single'],
 		semi: [2, 'always'],
-		strict: 0,
-		'react/jsx-uses-react': 'error',
-		'react/jsx-uses-vars': 'error'
+		strict: 0
 	}
 };
