@@ -1,0 +1,38 @@
+[
+	{
+		"id": 0,
+		"email": "tom@holextra.com",
+		"givenName": "Tom",
+		"familyName": "Solomon",
+		"created": "2020-02-15T13:07:01.000Z",
+		"password": "password",
+		"about": "I like music"
+	},
+	{
+		"id": 1,
+		"email": "dick@holextra.com",
+		"givenName": "Dick",
+		"familyName": "Solomon",
+		"created": "2020-02-15T13:07:01.000Z",
+		"password": "password",
+		"about": "I like films"
+	},
+	{
+		"id": 2,
+		"email": "harry@holextra.com",
+		"givenName": "Harry",
+		"familyName": "Solomon",
+		"created": "2020-02-15T13:07:01.000Z",
+		"password": "password",
+		"about": "I like books"
+	},
+	{
+		"id": 3,
+		"email": "sally@holextra.com",
+		"givenName": "Sally",
+		"familyName": "Solomon",
+		"created": "2020-02-15T13:07:01.000Z",
+		"password": "password",
+		"about": "I like cars"
+	}
+]
