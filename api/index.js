@@ -1,4 +1,4 @@
-import APIServer from './server';
+import APIServer from './src/server';
 import { PORT } from './src/models/RouteConstants';
 import dotenv from 'dotenv';
 
