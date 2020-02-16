@@ -6,6 +6,7 @@ describe('User Service', () => {
 	const invalidEmail = '123';
 	const invalidPassword = '123';
 	const secretKey = 'TRFTS';
+	const validToken = 'abcd';
 
 	const validUser = {
 		id: 0,
@@ -17,6 +18,14 @@ describe('User Service', () => {
 		about: 'I like music'
 	};
 
+	const saveAuthToken = jest.fn((email, password, token) => {
+		return true;
+	});
+
+	const saveAuthTokenFail = jest.fn((email, password, token) => {
+		return false;
+	});
+
 	const getUserByEmailPassword = jest.fn((email, password) => {
 		return validUser;
 	});
@@ -25,8 +34,9 @@ describe('User Service', () => {
 		return null;
 	});
 
-	const mockUserRepo = { getUserByEmailPassword };
+	const mockUserRepo = { saveAuthToken, getUserByEmailPassword };
 	const mockUserRepoFail = {
+		saveAuthToken: saveAuthTokenFail,
 		getUserByEmailPassword: getUserByEmailPasswordFail
 	};
 
@@ -63,8 +73,27 @@ describe('User Service', () => {
 	});
 
 	it('Will generate an auth token', () => {
-    const token = userService.generateAuthToken(validEmail, validPassword);
-    // TODO: Test generate an auth token that changes on every call?
+		const token = userService.generateAuthToken(validEmail, validPassword);
+		// TODO: Test generate an auth token that changes on every call?
 		//expect(token).toMatchSnapshot(token);
+	});
+
+	it('Will save a user token', async () => {
+		const savedToken = await userService.saveToken(
+			validEmail,
+			validPassword,
+			validToken
+		);
+		expect(savedToken).toBe(true);
+	});
+
+	it('Will fail to save a user token', async () => {
+		userService = new UserService(mockUserRepoFail, secretKey);
+		const savedToken = await userService.saveToken(
+			validEmail,
+			validPassword,
+			validToken
+		);
+		expect(savedToken).toBe(false);
 	});
 });

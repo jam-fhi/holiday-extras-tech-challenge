@@ -30,6 +30,10 @@ describe('The host server will provide access to backend functionality', () => {
 		return false;
 	});
 
+	const saveToken = jest.fn((email, password, token) => {
+		return true;
+	});
+
 	const doLogin = jest.fn((email, password) => {
 		return true;
 	});
@@ -42,7 +46,12 @@ describe('The host server will provide access to backend functionality', () => {
 		throw Error('TEST ERROR');
 	});
 
-	const mockUserService = { generateAuthToken, validateLogin, doLogin };
+	const mockUserService = {
+		saveToken,
+		generateAuthToken,
+		validateLogin,
+		doLogin
+	};
 	const mockUserServiceFail = { validateLogin, doLogin: doLoginFail };
 	const mockUserServiceError = { validateLogin, doLogin: doLoginError };
 	const mockUserServiceValidationFail = { validateLogin: validateLoginFail };
@@ -109,6 +118,7 @@ describe('The host server will provide access to backend functionality', () => {
 		const serverReply = await superagent.get(
 			`${HOST}:${PORT}/${BASE}/${APIDOCS}`
 		);
+		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
 });

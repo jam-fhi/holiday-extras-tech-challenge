@@ -19,4 +19,22 @@ export default class DatabaseRepository {
 		await this.mongoClient.closeConnection(dbConn);
 		return user;
 	}
+
+	async saveAuthToken(email, password, token) {
+		const dbConn = await this.mongoClient.getMongoDBConnection();
+		const user = await this.mongoClient.updateOne(
+			dbConn,
+			this.db,
+			this.collection,
+			{
+				email,
+				password
+			},
+			{
+				token
+			}
+		);
+		await this.mongoClient.closeConnection(dbConn);
+		return user;
+	}
 }

@@ -64,6 +64,11 @@ export default class APIServer {
 							req.headers.email,
 							req.headers.password
 						);
+						this.userService.saveToken(
+							req.headers.email,
+							req.headers.password,
+							token
+						);
 						res.json({ token });
 					} else {
 						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);

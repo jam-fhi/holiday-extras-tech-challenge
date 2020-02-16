@@ -39,6 +39,14 @@ export default class MongoConnection {
 		return foundDocument;
 	}
 
+	async updateOne(dbConn, db, collection, query, update) {
+		const updateDocument = await dbConn
+			.db(db)
+			.collection(collection)
+			.updateOne(query, { $set: update });
+		return updateDocument;
+	}
+
 	async closeConnection(dbConn) {
 		await dbConn.close();
 	}

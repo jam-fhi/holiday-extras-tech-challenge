@@ -31,9 +31,15 @@ export default class UserService {
 
 	async doLogin(email, password) {
 		const user = await this.userRepo.getUserByEmailPassword(email, password);
-		if (user) {
-			return true;
-		}
-		return false;
+		return user ? true : false;
+	}
+
+	async saveToken(email, password, token) {
+		const savedToken = await this.userRepo.saveAuthToken(
+			email,
+			password,
+			token
+		);
+		return savedToken ? true : false;
 	}
 }

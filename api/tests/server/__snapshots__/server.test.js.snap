@@ -6,7 +6,6 @@ Object {
     "connection": "close",
     "content-length": "936",
     "content-type": "application/json; charset=utf-8",
-    "date": "Sun, 16 Feb 2020 21:59:26 GMT",
     "etag": "W/\\"3a8-UBQf/dx3UQfu5NAlCwOPpKtNmfY\\"",
     "x-powered-by": "Express",
   },

@@ -14,6 +14,7 @@ describe('User Repository', () => {
 	const collection = 'test';
 	const validEmail = 'test@holextra.com';
 	const validPwd = 'password';
+	const validToken = 'abcd';
 	const invalidEmail = '123';
 	const invalidPwd = '123';
 	let validMongoClient;
@@ -50,5 +51,14 @@ describe('User Repository', () => {
 			invalidPwd
 		);
 		expect(noUser).toBe(null);
+	});
+
+	it('Will update the users token', async () => {
+		const userUpdate = await userRepo.saveAuthToken(
+			validEmail,
+			validPwd,
+			validToken
+		);
+		expect(userUpdate).toBe(true);
 	});
 });

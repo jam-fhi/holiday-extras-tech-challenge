@@ -64,4 +64,9 @@ describe('MongoConnection', () => {
 		const noResult = await mongoConn.findOne(dbConnFail);
 		expect(noResult).toBe(findOneNoResult);
 	});
+
+	it('Will update the database with new values', async () => {
+		const update = await mongoConn.updateOne(dbConn);
+		expect(update).toBe(true);
+	});
 });
