@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The host server will provide access to backend functionality Will run the server 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "2",
+    "content-type": "text/plain; charset=utf-8",
+    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {},
+    "method": "GET",
+    "url": "http://localhost:3001/login",
+  },
+  "status": 200,
+  "text": "OK",
+}
+`;
