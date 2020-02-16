@@ -5,6 +5,19 @@ import { PORT, HOST, LOGIN, BASE } from '../../src/models/RouteConstants';
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
+	const BadRequest = 'Bad Request';
+	const validEmail = 'test@holextra.com';
+	const validPassword = 'password';
+	const invalidEmail = '123';
+	const invalidPassword = '123';
+
+	const validateLogin = jest.fn((email, password) => {
+		return true;
+	});
+
+	const validateLoginFail = jest.fn((email, password) => {
+		return false;
+	});
 
 	const doLogin = jest.fn((email, password) => {
 		return true;
@@ -18,9 +31,10 @@ describe('The host server will provide access to backend functionality', () => {
 		throw Error('TEST ERROR');
 	});
 
-	const mockUserService = { doLogin };
-	const mockUserServiceFail = { doLogin: doLoginFail };
-	const mockUserServiceError = { doLogin: doLoginError };
+	const mockUserService = { validateLogin, doLogin };
+	const mockUserServiceFail = { validateLogin, doLogin: doLoginFail };
+	const mockUserServiceError = { validateLogin, doLogin: doLoginError };
+	const mockUserServiceValidationFail = { validateLogin: validateLoginFail };
 
 	let server;
 
@@ -31,22 +45,37 @@ describe('The host server will provide access to backend functionality', () => {
 	it('Will login successfully', async () => {
 		server = new APIServer(mockUserService);
 		await server.startServer(PORT);
-		const serverReply = await superagent.post(
-			`${HOST}:${PORT}/${BASE}/${LOGIN}`
-		);
+		const serverReply = await superagent
+			.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
+			.set('email', validEmail)
+			.set('password', validPassword);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
 
-	it('Will fail login', async () => {
+	it('Will fail login authorization', async () => {
 		server = new APIServer(mockUserServiceFail);
 		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent.post(
-				`${HOST}:${PORT}/${BASE}/${LOGIN}`
-			);
+			const serverReply = await superagent
+				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
+				.set('email', validEmail)
+				.set('password', validPassword);
 		} catch (e) {
 			expect(e.message).toBe(Unauthorized);
+		}
+	});
+
+	it('Will fail login validation', async () => {
+		server = new APIServer(mockUserServiceValidationFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
+				.set('email', invalidEmail)
+				.set('password', invalidPassword);
+		} catch (e) {
+			expect(e.message).toBe(BadRequest);
 		}
 	});
 
@@ -54,9 +83,10 @@ describe('The host server will provide access to backend functionality', () => {
 		server = new APIServer(mockUserServiceError);
 		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent.post(
-				`${HOST}:${PORT}/${BASE}/${LOGIN}`
-			);
+			const serverReply = await superagent
+				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
+				.set('email', validEmail)
+				.set('password', validPassword);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}

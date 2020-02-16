@@ -19,11 +19,23 @@ export default class APIServer {
 	async buildAPI() {
 		await this.server.post(`/${BASE}/${LOGIN}`, async (req, res) => {
 			try {
-				const userLogin = await this.userService.doLogin('213', '123');
-				if (userLogin) {
-					res.sendStatus(HttpStatusCodes.OK);
+				if (
+					this.userService.validateLogin(
+						req.headers.email,
+						req.headers.password
+					)
+				) {
+					const userLogin = await this.userService.doLogin(
+						req.headers.email,
+						req.headers.password
+					);
+					if (userLogin) {
+						res.sendStatus(HttpStatusCodes.OK);
+					} else {
+						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+					}
 				} else {
-					res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 				}
 			} catch (e) {
 				console.log(e);

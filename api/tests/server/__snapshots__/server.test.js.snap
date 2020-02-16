@@ -11,7 +11,10 @@ Object {
   },
   "req": Object {
     "data": undefined,
-    "headers": Object {},
+    "headers": Object {
+      "email": "test@holextra.com",
+      "password": "password",
+    },
     "method": "POST",
     "url": "http://localhost:3001/api/login",
   },

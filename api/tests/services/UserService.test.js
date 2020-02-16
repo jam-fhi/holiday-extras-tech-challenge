@@ -45,4 +45,19 @@ describe('User Service', () => {
 		const failLogin = await userService.doLogin(invalidEmail, invalidPassword);
 		expect(failLogin).toBe(false);
 	});
+
+	it('Will return email and password validation schema', () => {
+		const schema = userService.getUserLoginValidationSchema();
+		expect(schema).toMatchSnapshot();
+	});
+
+	it('Will validate valid emails and password successfully', () => {
+		const valid = userService.validateLogin(validEmail, validPassword);
+		expect(valid).toBe(true);
+	});
+
+	it('Will fail validation of invalid emails and passwords', () => {
+		const invalid = userService.validateLogin(invalidEmail, invalidPassword);
+		expect(invalid).toBe(false);
+	});
 });
