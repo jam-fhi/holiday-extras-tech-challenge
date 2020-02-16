@@ -30,7 +30,11 @@ export default class APIServer {
 						req.headers.password
 					);
 					if (userLogin) {
-						res.sendStatus(HttpStatusCodes.OK);
+						const token = this.userService.generateAuthToken(
+							req.headers.email,
+							req.headers.password
+						);
+						res.set('auth-token', token).sendStatus(HttpStatusCodes.OK);
 					} else {
 						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
 					}

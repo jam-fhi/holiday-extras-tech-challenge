@@ -1,8 +1,10 @@
 import Joi from 'joi';
+import jwt from 'jsonwebtoken';
 
 export default class UserService {
-	constructor(userRepo) {
+	constructor(userRepo, secretKey) {
 		this.userRepo = userRepo;
+		this.secretKey = secretKey;
 	}
 
 	getUserLoginValidationSchema() {
@@ -21,6 +23,10 @@ export default class UserService {
 		);
 		console.log(value);
 		return error ? false : true;
+	}
+
+	generateAuthToken(email, password) {
+		return jwt.sign({ email, password }, this.secretKey);
 	}
 
 	async doLogin(email, password) {

@@ -3,6 +3,7 @@
 exports[`The host server will provide access to backend functionality Will login successfully 1`] = `
 Object {
   "header": Object {
+    "auth-token": "abcd",
     "connection": "close",
     "content-length": "2",
     "content-type": "text/plain; charset=utf-8",

@@ -5,6 +5,7 @@ describe('User Service', () => {
 	const validPassword = 'password';
 	const invalidEmail = '123';
 	const invalidPassword = '123';
+	const secretKey = 'TRFTS';
 
 	const validUser = {
 		id: 0,
@@ -32,7 +33,7 @@ describe('User Service', () => {
 	let userService;
 
 	beforeEach(() => {
-		userService = new UserService(mockUserRepo);
+		userService = new UserService(mockUserRepo, secretKey);
 	});
 
 	it('Will return true for a valid login', async () => {
@@ -41,7 +42,7 @@ describe('User Service', () => {
 	});
 
 	it('Will return false for an invalid login', async () => {
-		userService = new UserService(mockUserRepoFail);
+		userService = new UserService(mockUserRepoFail, secretKey);
 		const failLogin = await userService.doLogin(invalidEmail, invalidPassword);
 		expect(failLogin).toBe(false);
 	});
@@ -59,5 +60,11 @@ describe('User Service', () => {
 	it('Will fail validation of invalid emails and passwords', () => {
 		const invalid = userService.validateLogin(invalidEmail, invalidPassword);
 		expect(invalid).toBe(false);
+	});
+
+	it('Will generate an auth token', () => {
+    const token = userService.generateAuthToken(validEmail, validPassword);
+    // TODO: Test generate an auth token that changes on every call?
+		//expect(token).toMatchSnapshot(token);
 	});
 });

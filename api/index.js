@@ -14,6 +14,7 @@ const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_INTERNAL_URL;
 const authDB = process.env.MONGO_AUTH_DB;
+const secretKey = process.env.SECRET_KEY;
 
 const mongoConn = new MongoConnection(
 	MongoClient,
@@ -23,7 +24,7 @@ const mongoConn = new MongoConnection(
 	authDB
 );
 const userRepo = new UserRepository(mongoConn, userDatabase, userCollection);
-const userService = new UserService(userRepo);
+const userService = new UserService(userRepo, secretKey);
 
 const apiServer = new APIServer(userService);
 

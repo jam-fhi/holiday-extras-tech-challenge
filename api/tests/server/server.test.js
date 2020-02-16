@@ -10,6 +10,11 @@ describe('The host server will provide access to backend functionality', () => {
 	const validPassword = 'password';
 	const invalidEmail = '123';
 	const invalidPassword = '123';
+	const validAuthToken = 'abcd';
+
+	const generateAuthToken = jest.fn((email, password) => {
+		return validAuthToken;
+	});
 
 	const validateLogin = jest.fn((email, password) => {
 		return true;
@@ -31,7 +36,7 @@ describe('The host server will provide access to backend functionality', () => {
 		throw Error('TEST ERROR');
 	});
 
-	const mockUserService = { validateLogin, doLogin };
+	const mockUserService = { generateAuthToken, validateLogin, doLogin };
 	const mockUserServiceFail = { validateLogin, doLogin: doLoginFail };
 	const mockUserServiceError = { validateLogin, doLogin: doLoginError };
 	const mockUserServiceValidationFail = { validateLogin: validateLoginFail };
