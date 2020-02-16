@@ -5,11 +5,13 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "./node_modules/.bin/jest --detectOpenHandles",
-		"coverage": "./node_modules/.bin/jest --coverage"
+		"coverage": "./node_modules/.bin/jest --coverage",
+		"lint": "./node_modules/.bin/eslint src/**"
 	},
 	"author": "Jamie Hill",
 	"license": "ISC",
 	"dependencies": {
+		"eslint": "^6.8.0",
 		"jest": "^25.1.0"
 	}
 }
