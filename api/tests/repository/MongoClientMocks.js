@@ -23,7 +23,11 @@ const db = jest.fn(db => {
 });
 
 const collection = jest.fn(collection => {
-	return { findOne, updateOne };
+	return { findOne, updateOne, insertOne };
+});
+
+const insertOne = jest.fn(insert => {
+	return validFoundDocument;
 });
 
 const findOne = jest.fn(query => {

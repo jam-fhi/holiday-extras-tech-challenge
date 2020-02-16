@@ -13,9 +13,6 @@ import {
 } from './MongoClientMocks';
 
 describe('MongoConnection', () => {
-	const TRUE = true;
-	const UNDEFINED = undefined;
-
 	let mongoConn;
 
 	beforeEach(() => {
@@ -68,5 +65,10 @@ describe('MongoConnection', () => {
 	it('Will update the database with new values', async () => {
 		const update = await mongoConn.updateOne(dbConn);
 		expect(update).toBe(true);
+	});
+
+	it('Will insert the database with new values', async () => {
+		const insert = await mongoConn.insertOne(dbConn);
+		expect(insert).toMatchSnapshot();
 	});
 });
