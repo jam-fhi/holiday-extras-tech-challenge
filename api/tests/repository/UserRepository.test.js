@@ -8,21 +8,23 @@ import {
 	validAuthDB,
 	validFoundDocument
 } from './MongoClientMocks';
+import {
+	validID,
+	validGivenName,
+	validFamilyName,
+	validCreated,
+	validAbout,
+	validEmail,
+	validPwd,
+	validToken,
+	invalidEmail,
+	invalidPwd
+} from '../CommonData';
 import MongoConnection from '../../src/repository/MongoConnection';
 
 describe('User Repository', () => {
 	const db = 'tests';
 	const collection = 'test';
-	const validEmail = 'test@holextra.com';
-	const validPwd = 'password';
-	const validToken = 'abcd';
-	const invalidEmail = '123';
-	const invalidPwd = '123';
-	const validID = 1;
-	const validGivenName = 'Bob';
-	const validFamilyName = 'Smith';
-	const validCreated = '2020-02-16T13:13:13.001Z';
-	const validAbout = 'I like flowers';
 
 	let validMongoClient;
 	let invalidMongoClient;

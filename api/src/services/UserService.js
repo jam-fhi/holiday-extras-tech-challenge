@@ -42,4 +42,18 @@ export default class UserService {
 		);
 		return savedToken ? true : false;
 	}
+
+	async insertUser(id, email, givenName, familyName, password, about) {
+		const currentDate = new Date();
+		const user = await this.userRepo.insertUser(
+			id,
+			email,
+			givenName,
+			familyName,
+			currentDate.toISOString(),
+			password,
+			about
+		);
+		return user ? true : false;
+	}
 }

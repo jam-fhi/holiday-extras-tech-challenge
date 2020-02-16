@@ -1,0 +1,10 @@
+export const validID = 1;
+export const validGivenName = 'Bob';
+export const validFamilyName = 'Smith';
+export const validCreated = '2020-02-16T13:13:13.001Z';
+export const validAbout = 'I like flowers';
+export const validEmail = 'test@holextra.com';
+export const validPwd = 'password';
+export const validToken = 'abcd';
+export const invalidEmail = '123';
+export const invalidPwd = '123';
