@@ -12,8 +12,8 @@ Object {
   "req": Object {
     "data": undefined,
     "headers": Object {},
-    "method": "GET",
-    "url": "http://localhost:3001/login",
+    "method": "POST",
+    "url": "http://localhost:3001/api/login",
   },
   "status": 200,
   "text": "OK",

@@ -1,19 +1,24 @@
 import express from 'express';
-import { LOGIN } from './models/RouteConstants';
-import HttpStatusCodes from 'http-status-codes';
 import { SERVER_COPY } from './models/DisplayCopyConstants';
+import { LOGIN, BASE } from './models/RouteConstants';
+import HttpStatusCodes from 'http-status-codes';
 
 export default class APIServer {
-	constructor() {
+	constructor(userService) {
 		this.server = express();
 		this.activeServer = null;
+		this.userService = userService;
 	}
 
 	async setupServer() {
 		await this.server.use(express.json());
 		await this.server.use(express.urlencoded({ extended: true }));
+		await this.buildAPI();
+	}
 
-		await this.server.get(`/${LOGIN}`, async (req, res) => {
+	async buildAPI() {
+		await this.server.post(`/${BASE}/${LOGIN}`, async (req, res) => {
+			const userLogin = await this.userService.doLogin('213', '123');
 			res.sendStatus(HttpStatusCodes.OK);
 		});
 	}
