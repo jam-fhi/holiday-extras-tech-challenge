@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The host server will provide access to backend functionality Will run the server 1`] = `
+exports[`The host server will provide access to backend functionality Will login successfully 1`] = `
 Object {
   "header": Object {
     "connection": "close",
