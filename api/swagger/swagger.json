@@ -1,0 +1,68 @@
+{
+  "info": {
+    "title": "Amazing Online Profiles!",
+    "version": "1.0.0",
+    "description": "Technical Challenge for Holiday Extras"
+  },
+  "host": "localhost",
+  "basePath": "/api",
+  "swagger": "2.0",
+  "paths": {
+    "/login": {
+      "post": {
+        "description": "Login to the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "description": "Email address to use for login.",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "description": "User's password.",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "login"
+          },
+          "400": {
+            "description": "login details failed validation"
+          },
+          "401": {
+            "description": "login details failed authentication"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api-docs": {
+      "post": {
+        "description": "Displays api docs",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Display api docs"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}

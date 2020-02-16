@@ -6,7 +6,8 @@
 		"familyName": "Solomon",
 		"created": "2020-02-15T13:07:01.000Z",
 		"password": "password",
-		"about": "I like music"
+		"about": "I like music",
+		"token": ""
 	},
 	{
 		"id": 1,
@@ -15,7 +16,8 @@
 		"familyName": "Solomon",
 		"created": "2020-02-15T13:07:01.000Z",
 		"password": "password",
-		"about": "I like films"
+		"about": "I like films",
+		"token": ""
 	},
 	{
 		"id": 2,
@@ -24,7 +26,8 @@
 		"familyName": "Solomon",
 		"created": "2020-02-15T13:07:01.000Z",
 		"password": "password",
-		"about": "I like books"
+		"about": "I like books",
+		"token": ""
 	},
 	{
 		"id": 3,
@@ -33,6 +36,7 @@
 		"familyName": "Solomon",
 		"created": "2020-02-15T13:07:01.000Z",
 		"password": "password",
-		"about": "I like cars"
+		"about": "I like cars",
+		"token": ""
 	}
 ]

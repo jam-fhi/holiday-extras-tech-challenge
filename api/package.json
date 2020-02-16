@@ -7,7 +7,8 @@
 		"start": "nodemon -r esm index.js",
 		"test": "./node_modules/.bin/jest --detectOpenHandles",
 		"coverage": "./node_modules/.bin/jest --coverage",
-		"lint": "./node_modules/.bin/eslint src/**"
+		"lint": "./node_modules/.bin/eslint src/**",
+		"swagger": "./node_modules/.bin/swagger-jsdoc -d swagger/swaggerDef.js -o swagger/swagger.json"
 	},
 	"author": "Jamie Hill",
 	"license": "ISC",
@@ -16,7 +17,11 @@
 		"esm": "^3.2.25",
 		"express": "^4.17.1",
 		"http-status-codes": "^1.4.0",
-		"nodemon": "^2.0.2"
+		"joi": "^14.3.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongodb": "^3.5.3",
+		"nodemon": "^2.0.2",
+		"swagger-jsdoc": "^3.5.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.8.4",
