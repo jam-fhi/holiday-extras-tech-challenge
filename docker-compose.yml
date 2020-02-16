@@ -6,5 +6,11 @@ services:
       - .env
     ports:
       - '27017:27017'
+    volumes:
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+  mongo_seed:
+    build: ./db-seed/
+    links:
+      - mongodb
 networks:
   webnet:

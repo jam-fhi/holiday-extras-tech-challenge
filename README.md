@@ -28,4 +28,5 @@ To exit the application you can do a ctrl-c on the terminal that is running the 
 
 ### **Notes**
 
-For the purposes of this technical challenge, so its quick and easy to run this project, I've commited my `.env` file to the repository, normally I would not do this.
+1. For the purposes of this technical challenge, so its quick and easy to run this project, I've commited my `.env` file to the repository, normally I would not do this.
+2. I've left `id` in the user data structure, although Mongo creates a `_id` for each entry. `id` is required?
