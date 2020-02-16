@@ -1,11 +1,15 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+	"name": "api",
+	"version": "1.0.0",
+	"description": "API wrapper for the mongo database on the Holiday extra technical challenge",
+	"main": "index.js",
+	"scripts": {
+		"test": "./node_modules/.bin/jest --detectOpenHandles",
+		"coverage": "./node_modules/.bin/jest --coverage"
+	},
+	"author": "Jamie Hill",
+	"license": "ISC",
+	"dependencies": {
+		"jest": "^25.1.0"
+	}
 }
