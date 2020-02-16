@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Repository Will find one user 1`] = `
+Object {
+  "document": "found",
+}
+`;
