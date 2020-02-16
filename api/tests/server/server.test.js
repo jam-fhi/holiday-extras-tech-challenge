@@ -1,6 +1,12 @@
 import APIServer from '../../src/server';
 import superagent from 'superagent';
-import { PORT, HOST, LOGIN, BASE } from '../../src/models/RouteConstants';
+import {
+	PORT,
+	HOST,
+	LOGIN,
+	BASE,
+	APIDOCS
+} from '../../src/models/RouteConstants';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
@@ -95,5 +101,14 @@ describe('The host server will provide access to backend functionality', () => {
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
+	});
+
+	it('Will give out swagger docs', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent.get(
+			`${HOST}:${PORT}/${BASE}/${APIDOCS}`
+		);
+		expect(serverReply).toMatchSnapshot();
 	});
 });

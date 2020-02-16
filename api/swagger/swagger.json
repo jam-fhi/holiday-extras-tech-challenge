@@ -45,6 +45,19 @@
           }
         }
       }
+    },
+    "/api-docs": {
+      "post": {
+        "description": "Displays api docs",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Display api docs"
+          }
+        }
+      }
     }
   },
   "definitions": {},

@@ -1,7 +1,8 @@
 import express from 'express';
 import { SERVER_COPY } from './models/DisplayCopyConstants';
-import { LOGIN, BASE } from './models/RouteConstants';
+import { LOGIN, BASE, APIDOCS } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
+import SWAGGER from '../swagger/swagger.json';
 
 export default class APIServer {
 	constructor(userService) {
@@ -63,7 +64,7 @@ export default class APIServer {
 							req.headers.email,
 							req.headers.password
 						);
-						res.json({ token }).sendStatus(HttpStatusCodes.OK);
+						res.json({ token });
 					} else {
 						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
 					}
@@ -74,6 +75,22 @@ export default class APIServer {
 				console.log(e);
 				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 			}
+		});
+
+		/**
+		 * @swagger
+		 *
+		 * /api-docs:
+		 *   post:
+		 *     description: Displays api docs
+		 *     produces:
+		 *       - application/json
+		 *     responses:
+		 *       200:
+		 *         description: Display api docs
+		 */
+		this.server.get(`/${BASE}/${APIDOCS}`, (req, res) => {
+			res.json(SWAGGER);
 		});
 	}
 
