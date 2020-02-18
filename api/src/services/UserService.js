@@ -88,15 +88,42 @@ export default class UserService {
 
 	async insertUser(id, email, givenName, familyName, password, about) {
 		const currentDate = new Date();
-		const user = await this.userRepo.insertUser(
-			id,
-			email,
-			givenName,
-			familyName,
-			currentDate.toISOString(),
-			password,
-			about
-		);
+		let user;
+		if (!(await this.userRepo.getUserByEmail(email))) {
+			user = await this.userRepo.insertUser(
+				id,
+				email,
+				givenName,
+				familyName,
+				currentDate.toISOString(),
+				password,
+				about
+			);
+		}
+		return user ? true : false;
+	}
+
+	async updateUser(_id, id, email, givenName, familyName, password, about) {
+		const updateUser = await this.userRepo.getUserByDBID(_id);
+		const existingUser = await this.userRepo.getUserByEmail(email);
+		let duplicateEmail = false;
+		let user;
+		if (existingUser && updateUser) {
+			if (existingUser._id !== updateUser._id) {
+				duplicateEmail = true;
+			}
+		}
+		if (!duplicateEmail && updateUser) {
+			user = await this.userRepo.updateUser(
+				_id,
+				id,
+				email,
+				givenName,
+				familyName,
+				password,
+				about
+			);
+		}
 		return user ? true : false;
 	}
 }

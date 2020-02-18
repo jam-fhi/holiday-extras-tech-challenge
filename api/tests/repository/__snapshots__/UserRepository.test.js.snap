@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`User Repository Will find one user by _id 1`] = `
+Object {
+  "document": "found",
+}
+`;
+
 exports[`User Repository Will find one user by email 1`] = `
 Object {
   "document": "found",
