@@ -132,4 +132,9 @@ export default class UserService {
 		}
 		return user ? true : false;
 	}
+
+	async getUser(_id) {
+		const user = await this.userRepo.getUserByDBID(_id);
+		return user;
+	}
 }

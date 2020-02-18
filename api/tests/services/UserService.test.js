@@ -247,6 +247,11 @@ describe('User Service', () => {
 		expect(user).toBe(false);
 	});
 
+	it('Will get a user', async () => {
+		const user = await userService.getUser(validUnderscoreID);
+		expect(user).toBe(true);
+	});
+
 	it('Will delete a user', async () => {
 		const user = await userService.deleteUser(validUnderscoreID);
 		expect(user).toBe(true);
