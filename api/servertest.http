@@ -34,3 +34,7 @@ _id: 5e4b7a7336f29e000879e948
 
 GET http://localhost:3001/api/user
 _id: 5e4b831234007d0007c5714a
+
+###
+
+GET http://localhost:3001/api/allusers
