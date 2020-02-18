@@ -12,22 +12,13 @@ import {
 	invalidGivenName,
 	invalidFamilyName,
 	invalidAbout,
-	validUnderscoreID
+	validUnderscoreID,
+	validUser
 } from '../CommonData';
 
 describe('User Service', () => {
 	const secretKey = 'TRFTS';
 	const validToken = 'abcd';
-
-	const validUser = {
-		id: 0,
-		email: 'tom@holextra.com',
-		givenName: 'Tom',
-		familyName: 'Solomon',
-		created: '2020-02-15T13:07:01.000Z',
-		password: 'password',
-		about: 'I like music'
-	};
 
 	const getUserByDBID = jest.fn(_id => {
 		return true;
@@ -46,6 +37,14 @@ describe('User Service', () => {
 	});
 
 	const getUserByEmailPasswordFail = jest.fn((email, password) => {
+		return null;
+	});
+
+	const getAllUsers = jest.fn(() => {
+		return [validUser, validUser];
+	});
+
+	const getAllUsersFail = jest.fn(() => {
 		return null;
 	});
 
@@ -88,7 +87,8 @@ describe('User Service', () => {
 		updateUser,
 		getUserByEmail: getUserByEmailFail,
 		getUserByDBID,
-		deleteUser
+		deleteUser,
+		getAllUsers
 	};
 	const mockUserRepoUpdate = {
 		insertUser,
@@ -104,7 +104,8 @@ describe('User Service', () => {
 		getUserByEmailPassword: getUserByEmailPasswordFail,
 		updateUser: updateUserFail,
 		getUserByEmail: getUserByEmailFail,
-		getUserByDBID
+		getUserByDBID,
+		getAllUsers: getAllUsersFail
 	};
 
 	let userService;
@@ -250,6 +251,16 @@ describe('User Service', () => {
 	it('Will get a user', async () => {
 		const user = await userService.getUser(validUnderscoreID);
 		expect(user).toBe(true);
+	});
+
+	it('Will get all users', async () => {
+		const users = await userService.getAllUsers();
+		expect(users).toMatchSnapshot();
+	});
+
+	it('Will fail to get all usres', async () => {
+		const users = await invalidUserService.getAllUsers();
+		expect(users).toBe(false);
 	});
 
 	it('Will delete a user', async () => {

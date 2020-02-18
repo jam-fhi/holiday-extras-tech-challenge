@@ -8,11 +8,36 @@
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
+    "/allusers": {
+      "get": {
+        "description": "Gets all users in the system",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          "200": {
+            "description": "all users returned"
+          },
+          "404": {
+            "description": "not found error"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/user": {
       "get": {
         "description": "Allows a user to get their profile details",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -25,7 +50,7 @@
         ],
         "responses": {
           "200": {
-            "description": "created account"
+            "description": "users details returned"
           },
           "404": {
             "description": "not found error"
@@ -41,6 +66,9 @@
         "description": "Allows a user to update their profile",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -66,6 +94,9 @@
         "description": "Allows a user to update their profile",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -137,6 +168,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -200,6 +234,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
             "name": "email",
@@ -233,10 +270,13 @@
       }
     },
     "/api-docs": {
-      "post": {
+      "get": {
         "description": "Displays api docs",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "responses": {
           "200": {

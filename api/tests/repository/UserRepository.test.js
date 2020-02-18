@@ -131,4 +131,9 @@ describe('User Repository', () => {
 		const userDelete = await userRepo.deleteUser(validUnderscoreID);
 		expect(userDelete).toBe(validFoundDocument);
 	});
+
+	it('Will find all users', async () => {
+		const users = await userRepo.getAllUsers();
+		expect(users).toMatchSnapshot();
+	});
 });

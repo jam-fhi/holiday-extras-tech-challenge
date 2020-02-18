@@ -14,6 +14,17 @@ Object {
 }
 `;
 
+exports[`MongoConnection Will find all documents 1`] = `
+Array [
+  Object {
+    "document": "found",
+  },
+  Object {
+    "document": "found",
+  },
+]
+`;
+
 exports[`MongoConnection Will find one result 1`] = `
 Object {
   "document": "found",

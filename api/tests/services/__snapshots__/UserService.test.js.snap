@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`User Service Will get all users 1`] = `
+Array [
+  Object {
+    "about": "I like music",
+    "name": "Tom Solomon",
+  },
+  Object {
+    "about": "I like music",
+    "name": "Tom Solomon",
+  },
+]
+`;
+
 exports[`User Service Will return email and password validation schema 1`] = `
 Object {
   "_baseType": undefined,

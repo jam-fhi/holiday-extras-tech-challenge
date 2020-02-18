@@ -76,4 +76,9 @@ describe('MongoConnection', () => {
 		const deleteDoc = await mongoConn.deleteOne(dbConn);
 		expect(deleteDoc).toMatchSnapshot();
 	});
+
+	it('Will find all documents', async () => {
+		const foundDoc = await mongoConn.findAll(dbConn);
+		expect(foundDoc).toMatchSnapshot();
+	});
 });
