@@ -11,7 +11,8 @@ import {
 	invalidID,
 	invalidGivenName,
 	invalidFamilyName,
-	invalidAbout
+	invalidAbout,
+	validUnderscoreID
 } from '../CommonData';
 
 describe('User Service', () => {
@@ -56,17 +57,63 @@ describe('User Service', () => {
 		}
 	);
 
-	const mockUserRepo = { insertUser, saveAuthToken, getUserByEmailPassword };
+	const updateUser = jest.fn(
+		(_id, id, email, givenName, familyName, password, about) => {
+			return true;
+		}
+	);
+
+	const updateUserFail = jest.fn(
+		(_id, id, email, givenName, familyName, password, about) => {
+			return false;
+		}
+	);
+
+	const findUserByEmail = jest.fn(email => {
+		return {
+			_id: validUnderscoreID,
+			id: validID,
+			email: validEmail,
+			givenName: validGivenName,
+			familyName: validFamilyName,
+			password: validPwd,
+			about: validAbout
+		};
+	});
+
+	const findUserByEmailFail = jest.fn(email => {
+		return false;
+	});
+
+	const mockUserRepo = {
+		insertUser,
+		saveAuthToken,
+		getUserByEmailPassword,
+		updateUser,
+		findUserByEmail: findUserByEmailFail
+	};
+	const mockUserRepoUpdate = {
+		insertUser,
+		saveAuthToken,
+		getUserByEmailPassword,
+		updateUser,
+		findUserByEmail: findUserByEmail
+	};
 	const mockUserRepoFail = {
 		insertUser: insertUserFail,
 		saveAuthToken: saveAuthTokenFail,
-		getUserByEmailPassword: getUserByEmailPasswordFail
+		getUserByEmailPassword: getUserByEmailPasswordFail,
+		updateUser: updateUserFail,
+		findUserByEmail: findUserByEmailFail
 	};
 
 	let userService;
-
+	let invalidUserService;
+	let updateUserService;
 	beforeEach(() => {
 		userService = new UserService(mockUserRepo, secretKey);
+		invalidUserService = new UserService(mockUserRepoFail, secretKey);
+		updateUserService = new UserService(mockUserRepoUpdate, secretKey);
 	});
 
 	it('Will return true for a valid login', async () => {
@@ -75,8 +122,10 @@ describe('User Service', () => {
 	});
 
 	it('Will return false for an invalid login', async () => {
-		userService = new UserService(mockUserRepoFail, secretKey);
-		const failLogin = await userService.doLogin(invalidEmail, invalidPwd);
+		const failLogin = await invalidUserService.doLogin(
+			invalidEmail,
+			invalidPwd
+		);
 		expect(failLogin).toBe(false);
 	});
 
@@ -140,8 +189,7 @@ describe('User Service', () => {
 	});
 
 	it('Will fail to save a user token', async () => {
-		userService = new UserService(mockUserRepoFail, secretKey);
-		const savedToken = await userService.saveToken(
+		const savedToken = await invalidUserService.saveToken(
 			validEmail,
 			validPwd,
 			validToken
@@ -162,14 +210,39 @@ describe('User Service', () => {
 	});
 
 	it('Will fail to save a new user', async () => {
-		userService = new UserService(mockUserRepoFail, secretKey);
-		const user = await userService.insertUser(
+		const user = await invalidUserService.insertUser(
 			validID,
 			invalidEmail,
 			validGivenName,
 			validFamilyName,
 			invalidPwd,
 			validAbout
+		);
+		expect(user).toBe(false);
+	});
+
+	it('Will update a user', async () => {
+		const user = await updateUserService.updateUser(
+			validUnderscoreID,
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validPwd,
+			validAbout
+		);
+		expect(user).toBe(true);
+	});
+
+	it('Will fail to update a user', async () => {
+		const user = await invalidUserService.updateUser(
+			validUnderscoreID,
+			invalidID,
+			invalidEmail,
+			invalidGivenName,
+			invalidFamilyName,
+			invalidPwd,
+			invalidAbout
 		);
 		expect(user).toBe(false);
 	});

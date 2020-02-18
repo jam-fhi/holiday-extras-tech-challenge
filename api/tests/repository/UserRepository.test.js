@@ -90,7 +90,6 @@ describe('User Repository', () => {
 			validEmail,
 			validGivenName,
 			validFamilyName,
-			validCreated,
 			validPassword,
 			validAbout
 		);
@@ -104,7 +103,6 @@ describe('User Repository', () => {
 			validEmail,
 			validGivenName,
 			validFamilyName,
-			validCreated,
 			validPassword,
 			validAbout
 		);

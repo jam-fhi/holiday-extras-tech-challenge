@@ -34,16 +34,7 @@ export default class DatabaseRepository {
 		return user;
 	}
 
-	async updateUser(
-		_id,
-		id,
-		email,
-		givenName,
-		familyName,
-		created,
-		password,
-		about
-	) {
+	async updateUser(_id, id, email, givenName, familyName, password, about) {
 		const dbConn = await this.mongoClient.getMongoDBConnection();
 		const user = await this.mongoClient.updateOne(
 			dbConn,
@@ -57,7 +48,6 @@ export default class DatabaseRepository {
 				email,
 				givenName,
 				familyName,
-				created,
 				password,
 				about
 			}

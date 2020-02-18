@@ -88,15 +88,37 @@ export default class UserService {
 
 	async insertUser(id, email, givenName, familyName, password, about) {
 		const currentDate = new Date();
-		const user = await this.userRepo.insertUser(
-			id,
-			email,
-			givenName,
-			familyName,
-			currentDate.toISOString(),
-			password,
-			about
-		);
+		let user;
+		if (!(await this.userRepo.findUserByEmail(email))) {
+			user = await this.userRepo.insertUser(
+				id,
+				email,
+				givenName,
+				familyName,
+				currentDate.toISOString(),
+				password,
+				about
+			);
+		}
+		return user ? true : false;
+	}
+
+	async updateUser(_id, id, email, givenName, familyName, password, about) {
+		const existingUser = await this.userRepo.findUserByEmail(email);
+		let user;
+		if (existingUser) {
+			if (existingUser._id === _id) {
+				user = await this.userRepo.updateUser(
+					_id,
+					id,
+					email,
+					givenName,
+					familyName,
+					password,
+					about
+				);
+			}
+		}
 		return user ? true : false;
 	}
 }
