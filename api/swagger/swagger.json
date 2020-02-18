@@ -8,6 +8,25 @@
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
+    "/allusers": {
+      "get": {
+        "description": "Gets all users in the system",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "all users returned"
+          },
+          "404": {
+            "description": "not found error"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/user": {
       "get": {
         "description": "Allows a user to get their profile details",
@@ -25,7 +44,7 @@
         ],
         "responses": {
           "200": {
-            "description": "created account"
+            "description": "users details returned"
           },
           "404": {
             "description": "not found error"
