@@ -6,7 +6,8 @@ import {
 	APIDOCS,
 	REGISTER,
 	UPDATE,
-	DELETE
+	DELETE,
+	USER
 } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
@@ -28,6 +29,40 @@ export default class APIServer {
 		/**
 		 * @swagger
 		 *
+		 * /user:
+		 *   get:
+		 *     description: Allows a user to get their profile details
+		 *     produces:
+		 *       - application/json
+		 *     parameters:
+		 *       - name: _id
+		 *         description: The mongo database id for the user
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *     responses:
+		 *       200:
+		 *         description: created account
+		 *       500:
+		 *         description: internal server error
+		 */
+		await this.server.get(`/${BASE}/${USER}`, async (req, res) => {
+			try {
+				const user = await this.userService.getUser(req.headers._id);
+				if (user) {
+					res.json(user);
+				} else {
+					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+				}
+			} catch (e) {
+				console.log(e);
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			}
+		});
+
+		/**
+		 * @swagger
+		 *
 		 * /delete:
 		 *   delete:
 		 *     description: Allows a user to update their profile
@@ -41,7 +76,7 @@ export default class APIServer {
 		 *         type: string
 		 *     responses:
 		 *       200:
-		 *         description: created account
+		 *         description: deleted account
 		 *       500:
 		 *         description: internal server error
 		 */
@@ -105,7 +140,7 @@ export default class APIServer {
 		 *         type: string
 		 *     responses:
 		 *       200:
-		 *         description: created account
+		 *         description: updated account
 		 *       500:
 		 *         description: internal server error
 		 *       400:

@@ -49,6 +49,28 @@ Object {
 }
 `;
 
+exports[`The host server will provide access to backend functionality Will get a user 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "4",
+    "content-type": "application/json; charset=utf-8",
+    "etag": "W/\\"4-X/5TO4MPCKAyY0ipFgr6/IraRNs\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {
+      "_id": 1234,
+    },
+    "method": "GET",
+    "url": "http://localhost:3001/api/user",
+  },
+  "status": 200,
+  "text": "true",
+}
+`;
+
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
 Object {
   "header": Object {
