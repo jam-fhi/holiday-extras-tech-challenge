@@ -35,6 +35,8 @@ export default class APIServer {
 		 *     description: Gets all users in the system
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     responses:
 		 *       200:
 		 *         description: all users returned
@@ -65,6 +67,8 @@ export default class APIServer {
 		 *     description: Allows a user to get their profile details
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -101,6 +105,8 @@ export default class APIServer {
 		 *     description: Allows a user to update their profile
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -135,6 +141,8 @@ export default class APIServer {
 		 *     description: Allows a user to update their profile
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -222,6 +230,8 @@ export default class APIServer {
 		 *     description: Allows a user to register for an awesome profile
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
@@ -303,6 +313,8 @@ export default class APIServer {
 		 *     description: Login to the application
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: email
 		 *         description: Email address to use for login.
@@ -363,10 +375,12 @@ export default class APIServer {
 		 * @swagger
 		 *
 		 * /api-docs:
-		 *   post:
+		 *   get:
 		 *     description: Displays api docs
 		 *     produces:
 		 *       - application/json
+		 *     consumes:
+		 *       - multipart/form-data
 		 *     responses:
 		 *       200:
 		 *         description: Display api docs

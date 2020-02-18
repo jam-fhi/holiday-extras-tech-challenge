@@ -14,6 +14,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "responses": {
           "200": {
             "description": "all users returned"
@@ -32,6 +35,9 @@
         "description": "Allows a user to get their profile details",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -61,6 +67,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
             "name": "_id",
@@ -85,6 +94,9 @@
         "description": "Allows a user to update their profile",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -156,6 +168,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -219,6 +234,9 @@
         "produces": [
           "application/json"
         ],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
             "name": "email",
@@ -252,10 +270,13 @@
       }
     },
     "/api-docs": {
-      "post": {
+      "get": {
         "description": "Displays api docs",
         "produces": [
           "application/json"
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "responses": {
           "200": {
