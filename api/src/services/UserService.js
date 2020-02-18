@@ -49,7 +49,7 @@ export default class UserService {
 			{ id, email, givenName, familyName, password, about },
 			this.getUserValidationSchema()
 		);
-		return error ? false : true;
+		return this.isValid(error, value);
 	}
 
 	validateLogin(email, password) {
@@ -57,7 +57,15 @@ export default class UserService {
 			{ email, password },
 			this.getUserLoginValidationSchema()
 		);
-		return error ? false : true;
+		return this.isValid(error, value);
+	}
+
+	isValid(error, value) {
+		if (error) {
+			console.log(error.details, value);
+			return false;
+		}
+		return true;
 	}
 
 	generateAuthToken(email, password) {
