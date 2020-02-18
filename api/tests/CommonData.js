@@ -8,3 +8,7 @@ export const validPwd = 'password';
 export const validToken = 'abcd';
 export const invalidEmail = '123';
 export const invalidPwd = '123';
+export const invalidID = -1;
+export const invalidGivenName = '123';
+export const invalidFamilyName = '123';
+export const invalidAbout = '123';

@@ -7,7 +7,11 @@ import {
 	validEmail,
 	validPwd,
 	invalidEmail,
-	invalidPwd
+	invalidPwd,
+	invalidID,
+	invalidGivenName,
+	invalidFamilyName,
+	invalidAbout
 } from '../CommonData';
 
 describe('User Service', () => {
@@ -81,6 +85,11 @@ describe('User Service', () => {
 		expect(schema).toMatchSnapshot();
 	});
 
+	it('Will return user validation schema', () => {
+		const schema = userService.getUserValidationSchema();
+		expect(schema).toMatchSnapshot();
+	});
+
 	it('Will validate valid emails and password successfully', () => {
 		const valid = userService.validateLogin(validEmail, validPwd);
 		expect(valid).toBe(true);
@@ -88,6 +97,30 @@ describe('User Service', () => {
 
 	it('Will fail validation of invalid emails and passwords', () => {
 		const invalid = userService.validateLogin(invalidEmail, invalidPwd);
+		expect(invalid).toBe(false);
+	});
+
+	it('Will validate valid user details successfully', () => {
+		const valid = userService.validateUser(
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validPwd,
+			validAbout
+		);
+		expect(valid).toBe(true);
+	});
+
+	it('Will fail validation of invalid user details', () => {
+		const invalid = userService.validateUser(
+			invalidID,
+			invalidEmail,
+			invalidGivenName,
+			invalidFamilyName,
+			invalidPwd,
+			invalidAbout
+		);
 		expect(invalid).toBe(false);
 	});
 

@@ -5,22 +5,57 @@ import {
 	HOST,
 	LOGIN,
 	BASE,
-	APIDOCS
+	APIDOCS,
+	REGISTER
 } from '../../src/models/RouteConstants';
+import {
+	validID,
+	validGivenName,
+	validFamilyName,
+	validAbout,
+	validEmail,
+	validPwd,
+	validToken,
+	invalidEmail,
+	invalidPwd,
+	invalidID,
+	invalidGivenName,
+	invalidFamilyName,
+	invalidAbout
+} from '../CommonData';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
 	const BadRequest = 'Bad Request';
-	const validEmail = 'test@holextra.com';
-	const validPassword = 'password';
-	const invalidEmail = '123';
-	const invalidPassword = '123';
-	const validAuthToken = 'abcd';
 
 	const generateAuthToken = jest.fn((email, password) => {
-		return validAuthToken;
+		return validToken;
 	});
+
+	const insertUser = jest.fn(
+		(id, email, givenName, familyName, password, about) => {
+			return true;
+		}
+	);
+
+	const insertUserFail = jest.fn(
+		(id, email, givenName, familyName, password, about) => {
+			return false;
+		}
+	);
+
+	const validateUser = jest.fn(
+		(id, email, givenName, familyName, password, about) => {
+			return true;
+		}
+	);
+
+	const validateUserFail = jest.fn(
+		(id, email, givenName, familyName, password, about) => {
+			return false;
+		}
+	);
 
 	const validateLogin = jest.fn((email, password) => {
 		return true;
@@ -47,14 +82,29 @@ describe('The host server will provide access to backend functionality', () => {
 	});
 
 	const mockUserService = {
+		insertUser,
+		validateUser,
 		saveToken,
 		generateAuthToken,
 		validateLogin,
 		doLogin
 	};
-	const mockUserServiceFail = { validateLogin, doLogin: doLoginFail };
-	const mockUserServiceError = { validateLogin, doLogin: doLoginError };
-	const mockUserServiceValidationFail = { validateLogin: validateLoginFail };
+	const mockUserServiceFail = {
+		validateUser,
+		validateLogin,
+		doLogin: doLoginFail,
+		insertUser,
+		insertUserFail
+	};
+	const mockUserServiceError = {
+		validateUser,
+		validateLogin,
+		doLogin: doLoginError
+	};
+	const mockUserServiceValidationFail = {
+		validateUser: validateUserFail,
+		validateLogin: validateLoginFail
+	};
 
 	let server;
 
@@ -68,7 +118,7 @@ describe('The host server will provide access to backend functionality', () => {
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 			.set('email', validEmail)
-			.set('password', validPassword);
+			.set('password', validPwd);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
@@ -80,7 +130,7 @@ describe('The host server will provide access to backend functionality', () => {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set('email', validEmail)
-				.set('password', validPassword);
+				.set('password', validPwd);
 		} catch (e) {
 			expect(e.message).toBe(Unauthorized);
 		}
@@ -93,7 +143,7 @@ describe('The host server will provide access to backend functionality', () => {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set('email', invalidEmail)
-				.set('password', invalidPassword);
+				.set('password', invalidPwd);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -106,9 +156,41 @@ describe('The host server will provide access to backend functionality', () => {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set('email', validEmail)
-				.set('password', validPassword);
+				.set('password', validPwd);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
+	it('Will add a new user', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent
+			.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
+			.set('id', validID)
+			.set('email', validEmail)
+			.set('givenName', validGivenName)
+			.set('familyName', validFamilyName)
+			.set('password', validPwd)
+			.set('about', validAbout);
+		delete serverReply.header.date;
+		expect(serverReply).toMatchSnapshot();
+	});
+
+	it('Will fail to add a new user on invalid data', async () => {
+		server = new APIServer(mockUserServiceValidationFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
+				.set('id', invalidID)
+				.set('email', invalidEmail)
+				.set('givenName', invalidGivenName)
+				.set('familyName', invalidFamilyName)
+				.set('password', invalidPwd);
+			set('about', invalidAbout);
+		} catch (e) {
+			expect(e.message).toBe(BadRequest);
 		}
 	});
 

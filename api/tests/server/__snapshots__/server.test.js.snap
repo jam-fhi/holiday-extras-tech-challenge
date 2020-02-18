@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`The host server will provide access to backend functionality Will add a new user 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "2",
+    "content-type": "text/plain; charset=utf-8",
+    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {
+      "about": "I like flowers",
+      "email": "test@holextra.com",
+      "familyname": "Smith",
+      "givenname": "Bob",
+      "id": 1,
+      "password": "password",
+    },
+    "method": "POST",
+    "url": "http://localhost:3001/api/register",
+  },
+  "status": 200,
+  "text": "OK",
+}
+`;
+
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
 Object {
   "header": Object {
