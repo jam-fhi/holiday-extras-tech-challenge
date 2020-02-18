@@ -123,4 +123,15 @@ export default class DatabaseRepository {
 		await this.mongoClient.closeConnection(dbConn);
 		return user;
 	}
+
+	async getAllUsers() {
+		const dbConn = await this.mongoClient.getMongoDBConnection();
+		const users = await this.mongoClient.findAll(
+			dbConn,
+			this.db,
+			this.collection
+		);
+		await this.mongoClient.closeConnection(dbConn);
+		return users;
+	}
 }
