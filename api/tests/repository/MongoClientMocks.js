@@ -18,8 +18,16 @@ const db = jest.fn(db => {
 	return { collection };
 });
 
+const find = jest.fn(dbConn => {
+	return true;
+});
+
+const findFail = jest.fn(dbConn => {
+	return false;
+});
+
 const collection = jest.fn(collection => {
-	return { findOne, updateOne, insertOne, deleteOne };
+	return { findOne, updateOne, insertOne, deleteOne, find };
 });
 
 const insertOne = jest.fn(insert => {
@@ -54,7 +62,8 @@ const collectionFail = jest.fn(collection => {
 	return {
 		findOne: findOneFail,
 		updateOne: updateOneFail,
-		deleteOne: deleteOneFail
+		deleteOne: deleteOneFail,
+		find: findFail
 	};
 });
 

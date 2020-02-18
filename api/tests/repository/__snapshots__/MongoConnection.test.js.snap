@@ -14,6 +14,8 @@ Object {
 }
 `;
 
+exports[`MongoConnection Will find all documents 1`] = `true`;
+
 exports[`MongoConnection Will find one result 1`] = `
 Object {
   "document": "found",
