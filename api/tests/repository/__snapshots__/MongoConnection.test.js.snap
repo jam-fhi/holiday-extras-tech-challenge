@@ -8,6 +8,8 @@ Object {
 }
 `;
 
+exports[`MongoConnection Will delete a document 1`] = `true`;
+
 exports[`MongoConnection Will find one result 1`] = `
 Object {
   "document": "found",

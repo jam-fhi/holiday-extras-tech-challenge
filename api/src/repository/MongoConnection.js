@@ -47,6 +47,14 @@ export default class MongoConnection {
 		return updateDocument;
 	}
 
+	async deleteOne(dbConn, db, collection, query) {
+		const deleteDocument = await dbConn
+			.db(db)
+			.collection(collection)
+			.deleteOne(query);
+		return deleteDocument;
+	}
+
 	async insertOne(dbConn, db, collection, insert) {
 		const insertDocument = await dbConn
 			.db(db)
