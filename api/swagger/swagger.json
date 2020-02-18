@@ -8,6 +8,31 @@
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
+    "/user": {
+      "get": {
+        "description": "Allows a user to get their profile details",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "description": "The mongo database id for the user",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "created account"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/delete": {
       "delete": {
         "description": "Allows a user to update their profile",
@@ -25,7 +50,7 @@
         ],
         "responses": {
           "200": {
-            "description": "created account"
+            "description": "deleted account"
           },
           "500": {
             "description": "internal server error"
@@ -92,7 +117,7 @@
         ],
         "responses": {
           "200": {
-            "description": "created account"
+            "description": "updated account"
           },
           "400": {
             "description": "details failed validation"
