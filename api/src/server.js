@@ -45,6 +45,8 @@ export default class APIServer {
 		 *         description: created account
 		 *       500:
 		 *         description: internal server error
+		 *       404:
+		 *         description: not found error
 		 */
 		await this.server.get(`/${BASE}/${USER}`, async (req, res) => {
 			try {
@@ -52,7 +54,7 @@ export default class APIServer {
 				if (user) {
 					res.json(user);
 				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					res.sendStatus(HttpStatusCodes.NOT_FOUND);
 				}
 			} catch (e) {
 				console.log(e);

@@ -27,6 +27,9 @@
           "200": {
             "description": "created account"
           },
+          "404": {
+            "description": "not found error"
+          },
           "500": {
             "description": "internal server error"
           }

@@ -32,6 +32,7 @@ describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
 	const BadRequest = 'Bad Request';
+	const NotFound = 'Not Found';
 	const headerUnderscoreID = '_id';
 	const headerID = 'id';
 	const headerEmail = 'email';
@@ -312,7 +313,7 @@ describe('The host server will provide access to backend functionality', () => {
 				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
 				.set(headerUnderscoreID, validUnderscoreID);
 		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
+			expect(e.message).toBe(NotFound);
 		}
 	});
 
