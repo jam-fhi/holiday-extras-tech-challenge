@@ -28,16 +28,16 @@ export default class APIServer {
 		/**
 		 * @swagger
 		 *
-		 * /update:
-		 *   patch:
-		 *     description: Allows a user to delete their profile
+		 * /delete:
+		 *   delete:
+		 *     description: Allows a user to update their profile
 		 *     produces:
 		 *       - application/json
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
-		 * 				 in: formData
-		 * 				 required: true
+		 *         in: formData
+		 *         required: true
 		 *         type: string
 		 *     responses:
 		 *       200:
@@ -70,8 +70,8 @@ export default class APIServer {
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
-		 * 				 in: formData
-		 * 				 required: true
+		 *         in: formData
+		 *         required: true
 		 *         type: string
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.

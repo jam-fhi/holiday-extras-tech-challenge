@@ -8,6 +8,31 @@
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
+    "/delete": {
+      "delete": {
+        "description": "Allows a user to update their profile",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "description": "The mongo database id for the user",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "created account"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/update": {
       "patch": {
         "description": "Allows a user to update their profile",
@@ -17,7 +42,10 @@
         "parameters": [
           {
             "name": "_id",
-            "description": "The mongo database id for the user"
+            "description": "The mongo database id for the user",
+            "in": "formData",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "id",
