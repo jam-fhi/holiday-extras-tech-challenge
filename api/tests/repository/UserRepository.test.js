@@ -18,7 +18,8 @@ import {
 	validPwd,
 	validToken,
 	invalidEmail,
-	invalidPwd
+	invalidPwd,
+	validUnderscoreID
 } from '../CommonData';
 import MongoConnection from '../../src/repository/MongoConnection';
 
@@ -29,6 +30,7 @@ describe('User Repository', () => {
 	let validMongoClient;
 	let invalidMongoClient;
 	let userRepo;
+	let invalidUserRepo;
 
 	beforeEach(() => {
 		validMongoClient = new MongoConnection(
@@ -46,6 +48,7 @@ describe('User Repository', () => {
 			validAuthDB
 		);
 		userRepo = new UserRepository(validMongoClient, db, collection);
+		invalidUserRepo = new UserRepository(invalidMongoClient, db, collection);
 	});
 
 	it('Will find one user by email and password', async () => {
@@ -59,8 +62,7 @@ describe('User Repository', () => {
 	});
 
 	it('Will fail to find a user by email and password', async () => {
-		userRepo = new UserRepository(invalidMongoClient, db, collection);
-		const noUser = await userRepo.getUserByEmailPassword(
+		const noUser = await invalidUserRepo.getUserByEmailPassword(
 			invalidEmail,
 			invalidPwd
 		);
@@ -68,8 +70,7 @@ describe('User Repository', () => {
 	});
 
 	it('Will fail to find a user by email', async () => {
-		userRepo = new UserRepository(invalidMongoClient, db, collection);
-		const noUser = await userRepo.getUserByEmail(invalidEmail);
+		const noUser = await invalidUserRepo.getUserByEmail(invalidEmail);
 		expect(noUser).toBe(null);
 	});
 
@@ -80,6 +81,34 @@ describe('User Repository', () => {
 			validToken
 		);
 		expect(userUpdate).toBe(true);
+	});
+
+	it('Will update a user', async () => {
+		const userUpdate = await userRepo.updateUser(
+			validUnderscoreID,
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validCreated,
+			validPassword,
+			validAbout
+		);
+		expect(userUpdate).toBe(true);
+	});
+
+	it('Will fail to update a user', async () => {
+		const userUpdate = await invalidUserRepo.updateUser(
+			validUnderscoreID,
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validCreated,
+			validPassword,
+			validAbout
+		);
+		expect(userUpdate).toBe(false);
 	});
 
 	it('Will insert a new user', async () => {

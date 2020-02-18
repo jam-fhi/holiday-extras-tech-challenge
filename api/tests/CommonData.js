@@ -12,3 +12,4 @@ export const invalidID = -1;
 export const invalidGivenName = '123';
 export const invalidFamilyName = '123';
 export const invalidAbout = '123';
+export const validUnderscoreID = 1234;

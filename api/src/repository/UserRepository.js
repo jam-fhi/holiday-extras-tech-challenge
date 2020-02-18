@@ -34,6 +34,38 @@ export default class DatabaseRepository {
 		return user;
 	}
 
+	async updateUser(
+		_id,
+		id,
+		email,
+		givenName,
+		familyName,
+		created,
+		password,
+		about
+	) {
+		const dbConn = await this.mongoClient.getMongoDBConnection();
+		const user = await this.mongoClient.updateOne(
+			dbConn,
+			this.db,
+			this.collection,
+			{
+				_id
+			},
+			{
+				id,
+				email,
+				givenName,
+				familyName,
+				created,
+				password,
+				about
+			}
+		);
+		await this.mongoClient.closeConnection(dbConn);
+		return user;
+	}
+
 	async insertUser(id, email, givenName, familyName, created, password, about) {
 		const dbConn = await this.mongoClient.getMongoDBConnection();
 		const user = await this.mongoClient.insertOne(

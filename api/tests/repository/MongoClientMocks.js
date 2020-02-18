@@ -30,6 +30,10 @@ const findOne = jest.fn(query => {
 	return validFoundDocument;
 });
 
+const updateOneFail = jest.fn((query, update) => {
+	return false;
+});
+
 const updateOne = jest.fn((query, update) => {
 	return true;
 });
@@ -39,7 +43,7 @@ const findOneFail = jest.fn(query => {
 });
 
 const collectionFail = jest.fn(collection => {
-	return { findOne: findOneFail };
+	return { findOne: findOneFail, updateOne: updateOneFail };
 });
 
 const dbFail = jest.fn(db => {
