@@ -3,3 +3,13 @@
 POST http://localhost:3001/api/login
 email: tom@holextra.com
 password: password
+
+###
+
+POST http://localhost:3001/api/register
+id: 1234
+email: john@holextra.com
+password: password
+givenName: John
+familyName: Solomon
+about: I like space nships

@@ -69,19 +69,19 @@ export default class APIServer {
 			try {
 				if (
 					this.userService.validateUser(
-						req.header.id,
+						req.headers.id,
 						req.headers.email,
-						req.headers.givenName,
-						req.headers.familyName,
+						req.headers.givenname,
+						req.headers.familyname,
 						req.headers.password,
 						req.headers.about
 					)
 				) {
 					const userInserted = await this.userService.insertUser(
-						req.header.id,
+						req.headers.id,
 						req.headers.email,
-						req.headers.givenName,
-						req.headers.familyName,
+						req.headers.givenname,
+						req.headers.familyname,
 						req.headers.password,
 						req.headers.about
 					);
