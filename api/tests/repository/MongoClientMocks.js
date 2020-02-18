@@ -31,7 +31,7 @@ const findOne = jest.fn(query => {
 });
 
 const deleteOne = jest.fn(query => {
-	return true;
+	return validFoundDocument;
 });
 
 const deleteOneFail = jest.fn(query => {

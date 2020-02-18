@@ -109,4 +109,18 @@ export default class DatabaseRepository {
 		await this.mongoClient.closeConnection(dbConn);
 		return user;
 	}
+
+	async deleteUser(_id) {
+		const dbConn = await this.mongoClient.getMongoDBConnection();
+		const user = await this.mongoClient.deleteOne(
+			dbConn,
+			this.db,
+			this.collection,
+			{
+				_id: ObjectID(_id)
+			}
+		);
+		await this.mongoClient.closeConnection(dbConn);
+		return user;
+	}
 }
