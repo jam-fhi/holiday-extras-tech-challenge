@@ -61,6 +61,11 @@ describe('User Repository', () => {
 		expect(user).toMatchSnapshot();
 	});
 
+	it('Will find one user by _id', async () => {
+		const user = await userRepo.getUserByDBID(validUnderscoreID);
+		expect(user).toMatchSnapshot();
+	});
+
 	it('Will fail to find a user by email and password', async () => {
 		const noUser = await invalidUserRepo.getUserByEmailPassword(
 			invalidEmail,

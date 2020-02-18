@@ -89,7 +89,7 @@ export default class UserService {
 	async insertUser(id, email, givenName, familyName, password, about) {
 		const currentDate = new Date();
 		let user;
-		if (!(await this.userRepo.findUserByEmail(email))) {
+		if (!(await this.userRepo.getUserByEmail(email))) {
 			user = await this.userRepo.insertUser(
 				id,
 				email,
@@ -104,20 +104,25 @@ export default class UserService {
 	}
 
 	async updateUser(_id, id, email, givenName, familyName, password, about) {
-		const existingUser = await this.userRepo.findUserByEmail(email);
+		const updateUser = await this.userRepo.getUserByDBID(_id);
+		const existingUser = await this.userRepo.getUserByEmail(email);
+		let duplicateEmail = false;
 		let user;
-		if (existingUser) {
-			if (existingUser._id === _id) {
-				user = await this.userRepo.updateUser(
-					_id,
-					id,
-					email,
-					givenName,
-					familyName,
-					password,
-					about
-				);
+		if (existingUser && updateUser) {
+			if (existingUser._id !== updateUser._id) {
+				duplicateEmail = true;
 			}
+		}
+		if (!duplicateEmail && updateUser) {
+			user = await this.userRepo.updateUser(
+				_id,
+				id,
+				email,
+				givenName,
+				familyName,
+				password,
+				about
+			);
 		}
 		return user ? true : false;
 	}

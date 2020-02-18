@@ -29,6 +29,10 @@ describe('User Service', () => {
 		about: 'I like music'
 	};
 
+	const getUserByDBID = jest.fn(_id => {
+		return true;
+	});
+
 	const saveAuthToken = jest.fn((email, password, token) => {
 		return true;
 	});
@@ -69,19 +73,7 @@ describe('User Service', () => {
 		}
 	);
 
-	const findUserByEmail = jest.fn(email => {
-		return {
-			_id: validUnderscoreID,
-			id: validID,
-			email: validEmail,
-			givenName: validGivenName,
-			familyName: validFamilyName,
-			password: validPwd,
-			about: validAbout
-		};
-	});
-
-	const findUserByEmailFail = jest.fn(email => {
+	const getUserByEmailFail = jest.fn(email => {
 		return false;
 	});
 
@@ -90,21 +82,24 @@ describe('User Service', () => {
 		saveAuthToken,
 		getUserByEmailPassword,
 		updateUser,
-		findUserByEmail: findUserByEmailFail
+		getUserByEmail: getUserByEmailFail,
+		getUserByDBID
 	};
 	const mockUserRepoUpdate = {
 		insertUser,
 		saveAuthToken,
 		getUserByEmailPassword,
 		updateUser,
-		findUserByEmail: findUserByEmail
+		getUserByEmail: getUserByEmailFail,
+		getUserByDBID
 	};
 	const mockUserRepoFail = {
 		insertUser: insertUserFail,
 		saveAuthToken: saveAuthTokenFail,
 		getUserByEmailPassword: getUserByEmailPasswordFail,
 		updateUser: updateUserFail,
-		findUserByEmail: findUserByEmailFail
+		getUserByEmail: getUserByEmailFail,
+		getUserByDBID
 	};
 
 	let userService;
