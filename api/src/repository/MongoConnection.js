@@ -40,11 +40,12 @@ export default class MongoConnection {
 	}
 
 	async findAll(dbConn, db, collection) {
-		const foundDocuments = await dbConn
+		const allDocs = await dbConn
 			.db(db)
 			.collection(collection)
-			.find({});
-		return foundDocuments;
+			.find({})
+			.toArray();
+		return allDocs;
 	}
 
 	async updateOne(dbConn, db, collection, query, update) {

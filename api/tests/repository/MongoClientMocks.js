@@ -18,8 +18,12 @@ const db = jest.fn(db => {
 	return { collection };
 });
 
+const toArray = jest.fn(() => {
+	return [validFoundDocument, validFoundDocument];
+});
+
 const find = jest.fn(dbConn => {
-	return true;
+	return { toArray };
 });
 
 const findFail = jest.fn(dbConn => {

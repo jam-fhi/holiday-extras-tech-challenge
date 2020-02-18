@@ -134,6 +134,6 @@ describe('User Repository', () => {
 
 	it('Will find all users', async () => {
 		const users = await userRepo.getAllUsers();
-		expect(users).toBe(true);
+		expect(users).toMatchSnapshot();
 	});
 });
