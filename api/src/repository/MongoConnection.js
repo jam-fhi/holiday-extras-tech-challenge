@@ -47,6 +47,14 @@ export default class MongoConnection {
 		return updateDocument;
 	}
 
+	async insertOne(dbConn, db, collection, insert) {
+		const insertDocument = await dbConn
+			.db(db)
+			.collection(collection)
+			.insertOne(insert);
+		return insertDocument;
+	}
+
 	async closeConnection(dbConn) {
 		await dbConn.close();
 	}

@@ -1,6 +1,6 @@
 import express from 'express';
 import { SERVER_COPY } from './models/DisplayCopyConstants';
-import { LOGIN, BASE, APIDOCS } from './models/RouteConstants';
+import { LOGIN, BASE, APIDOCS, REGISTER } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
 
@@ -18,6 +18,87 @@ export default class APIServer {
 	}
 
 	async buildAPI() {
+		/**
+		 * @swagger
+		 *
+		 * /register:
+		 *   post:
+		 *     description: Allows a user to register for an awesome profile
+		 *     produces:
+		 *       - application/json
+		 *     parameters:
+		 *       - name: id
+		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
+		 *         in: formData
+		 *         required: true
+		 *         type: integer
+		 *       - name: email
+		 *         description: Email address to use for login.
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *       - name: givenName
+		 *         description: User's given name
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *       - name: familyName
+		 *         description: User's family name
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *       - name: password
+		 *         description: User's password.
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *       - name: about
+		 *         description: Information about a user
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *     responses:
+		 *       200:
+		 *         description: created account
+		 *       500:
+		 *         description: internal server error
+		 *       400:
+		 *         description: details failed validation
+		 */
+		await this.server.post(`/${BASE}/${REGISTER}`, async (req, res) => {
+			try {
+				if (
+					this.userService.validateUser(
+						req.headers.id,
+						req.headers.email,
+						req.headers.givenname,
+						req.headers.familyname,
+						req.headers.password,
+						req.headers.about
+					)
+				) {
+					const userInserted = await this.userService.insertUser(
+						req.headers.id,
+						req.headers.email,
+						req.headers.givenname,
+						req.headers.familyname,
+						req.headers.password,
+						req.headers.about
+					);
+					if (userInserted) {
+						res.sendStatus(HttpStatusCodes.OK);
+					} else {
+						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					}
+				} else {
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
+				}
+			} catch (e) {
+				console.log(e);
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			}
+		});
+
 		/**
 		 * @swagger
 		 *

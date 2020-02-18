@@ -14,6 +14,12 @@ Object {
 }
 `;
 
+exports[`MongoConnection Will insert the database with new values 1`] = `
+Object {
+  "document": "found",
+}
+`;
+
 exports[`MongoConnection Will return Mongo Connection options 1`] = `
 Object {
   "numberOfRetries": 10,

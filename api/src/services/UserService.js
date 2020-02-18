@@ -16,13 +16,56 @@ export default class UserService {
 			.with('email', 'password');
 	}
 
+	getUserValidationSchema() {
+		return Joi.object()
+			.keys({
+				id: Joi.number()
+					.integer()
+					.min(0)
+					.max(2020),
+				email: Joi.string().email({ minDomainAtoms: 2 }),
+				givenName: Joi.string()
+					.alphanum()
+					.min(3)
+					.max(30)
+					.required(),
+				familyName: Joi.string()
+					.alphanum()
+					.min(3)
+					.max(30)
+					.required(),
+				password: Joi.string()
+					.regex(/^[a-zA-Z0-9]{3,30}$/)
+					.required(),
+				about: Joi.string()
+					.regex(/^[a-zA-Z0-9 .-:;]{3,255}$/)
+					.required()
+			})
+			.with('email', 'password');
+	}
+
+	validateUser(id, email, givenName, familyName, password, about) {
+		const { error, value } = Joi.validate(
+			{ id, email, givenName, familyName, password, about },
+			this.getUserValidationSchema()
+		);
+		return this.isValid(error, value);
+	}
+
 	validateLogin(email, password) {
 		const { error, value } = Joi.validate(
 			{ email, password },
 			this.getUserLoginValidationSchema()
 		);
-		console.log(value);
-		return error ? false : true;
+		return this.isValid(error, value);
+	}
+
+	isValid(error, value) {
+		if (error) {
+			console.log(error.details, value);
+			return false;
+		}
+		return true;
 	}
 
 	generateAuthToken(email, password) {
@@ -41,5 +84,19 @@ export default class UserService {
 			token
 		);
 		return savedToken ? true : false;
+	}
+
+	async insertUser(id, email, givenName, familyName, password, about) {
+		const currentDate = new Date();
+		const user = await this.userRepo.insertUser(
+			id,
+			email,
+			givenName,
+			familyName,
+			currentDate.toISOString(),
+			password,
+			about
+		);
+		return user ? true : false;
 	}
 }
