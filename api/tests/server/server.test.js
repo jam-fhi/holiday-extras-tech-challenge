@@ -6,7 +6,8 @@ import {
 	LOGIN,
 	BASE,
 	APIDOCS,
-	REGISTER
+	REGISTER,
+	UPDATE
 } from '../../src/models/RouteConstants';
 import {
 	validID,
@@ -21,17 +22,37 @@ import {
 	invalidID,
 	invalidGivenName,
 	invalidFamilyName,
-	invalidAbout
+	invalidAbout,
+	validUnderscoreID
 } from '../CommonData';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
 	const BadRequest = 'Bad Request';
+	const headerUnderscoreID = '_id';
+	const headerID = 'id';
+	const headerEmail = 'email';
+	const headerGivenName = 'givenName';
+	const headerFamilyName = 'familyName';
+	const headerPassword = 'password';
+	const headerAbout = 'about';
 
 	const generateAuthToken = jest.fn((email, password) => {
 		return validToken;
 	});
+
+	const updateUser = jest.fn(
+		(_id, id, email, givenName, familyName, password, about) => {
+			return true;
+		}
+	);
+
+	const updateUserFail = jest.fn(
+		(_id, id, email, givenName, familyName, password, about) => {
+			return false;
+		}
+	);
 
 	const insertUser = jest.fn(
 		(id, email, givenName, familyName, password, about) => {
@@ -87,14 +108,15 @@ describe('The host server will provide access to backend functionality', () => {
 		saveToken,
 		generateAuthToken,
 		validateLogin,
-		doLogin
+		doLogin,
+		updateUser
 	};
 	const mockUserServiceFail = {
 		validateUser,
 		validateLogin,
 		doLogin: doLoginFail,
-		insertUser,
-		insertUserFail
+		insertUser: insertUserFail,
+		updateUser: updateUserFail
 	};
 	const mockUserServiceError = {
 		validateUser,
@@ -117,8 +139,8 @@ describe('The host server will provide access to backend functionality', () => {
 		await server.startServer(PORT);
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-			.set('email', validEmail)
-			.set('password', validPwd);
+			.set(headerEmail, validEmail)
+			.set(headerPassword, validPwd);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
@@ -129,8 +151,8 @@ describe('The host server will provide access to backend functionality', () => {
 		try {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set('email', validEmail)
-				.set('password', validPwd);
+				.set(headerEmail, validEmail)
+				.set(headerPassword, validPwd);
 		} catch (e) {
 			expect(e.message).toBe(Unauthorized);
 		}
@@ -142,8 +164,8 @@ describe('The host server will provide access to backend functionality', () => {
 		try {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set('email', invalidEmail)
-				.set('password', invalidPwd);
+				.set(headerEmail, invalidEmail)
+				.set(headerPassword, invalidPwd);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -155,8 +177,8 @@ describe('The host server will provide access to backend functionality', () => {
 		try {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set('email', validEmail)
-				.set('password', validPwd);
+				.set(headerEmail, validEmail)
+				.set(headerPassword, validPwd);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
@@ -167,12 +189,12 @@ describe('The host server will provide access to backend functionality', () => {
 		await server.startServer(PORT);
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-			.set('id', validID)
-			.set('email', validEmail)
-			.set('givenName', validGivenName)
-			.set('familyName', validFamilyName)
-			.set('password', validPwd)
-			.set('about', validAbout);
+			.set(headerID, validID)
+			.set(headerEmail, validEmail)
+			.set(headerGivenName, validGivenName)
+			.set(headerFamilyName, validFamilyName)
+			.set(headerPassword, validPwd)
+			.set(headerAbout, validAbout);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
@@ -183,14 +205,50 @@ describe('The host server will provide access to backend functionality', () => {
 		try {
 			const serverReply = await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-				.set('id', invalidID)
-				.set('email', invalidEmail)
-				.set('givenName', invalidGivenName)
-				.set('familyName', invalidFamilyName)
-				.set('password', invalidPwd);
+				.set(headerID, invalidID)
+				.set(headerEmail, invalidEmail)
+				.set(headerGivenName, invalidGivenName)
+				.set(headerFamilyName, invalidFamilyName)
+				.set(headerPassword, invalidPwd)
+				.set(headerAbout, invalidAbout);
 			set('about', invalidAbout);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
+		}
+	});
+
+	it('Will update a user', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent
+			.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
+			.set(headerUnderscoreID, validUnderscoreID)
+			.set(headerID, validID)
+			.set(headerEmail, validEmail)
+			.set(headerGivenName, validGivenName)
+			.set(headerFamilyName, validFamilyName)
+			.set(headerPassword, validPwd)
+			.set(headerAbout, validAbout);
+		delete serverReply.header.date;
+		expect(serverReply).toMatchSnapshot();
+	});
+
+	it('Will fail to update a user', async () => {
+		server = new APIServer(mockUserServiceFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
+				.set(headerUnderscoreID, validUnderscoreID)
+				.set(headerID, invalidID)
+				.set(headerEmail, invalidEmail)
+				.set(headerGivenName, invalidGivenName)
+				.set(headerFamilyName, invalidFamilyName)
+				.set(headerPassword, invalidPwd)
+				.set(headerAbout, invalidAbout)
+				.set('about', invalidAbout);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
 		}
 	});
 

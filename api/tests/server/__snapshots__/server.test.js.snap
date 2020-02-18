@@ -69,3 +69,31 @@ Object {
   "text": "{\\"token\\":\\"abcd\\"}",
 }
 `;
+
+exports[`The host server will provide access to backend functionality Will update a user 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "2",
+    "content-type": "text/plain; charset=utf-8",
+    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {
+      "_id": 1234,
+      "about": "I like flowers",
+      "email": "test@holextra.com",
+      "familyname": "Smith",
+      "givenname": "Bob",
+      "id": 1,
+      "password": "password",
+    },
+    "method": "PATCH",
+    "url": "http://localhost:3001/api/update",
+  },
+  "status": 200,
+  "text": "OK",
+}
+`;
