@@ -67,6 +67,10 @@ describe('User Service', () => {
 		}
 	);
 
+	const deleteUser = jest.fn(_id => {
+		return true;
+	});
+
 	const updateUserFail = jest.fn(
 		(_id, id, email, givenName, familyName, password, about) => {
 			return false;
@@ -83,7 +87,8 @@ describe('User Service', () => {
 		getUserByEmailPassword,
 		updateUser,
 		getUserByEmail: getUserByEmailFail,
-		getUserByDBID
+		getUserByDBID,
+		deleteUser
 	};
 	const mockUserRepoUpdate = {
 		insertUser,
@@ -240,5 +245,10 @@ describe('User Service', () => {
 			invalidAbout
 		);
 		expect(user).toBe(false);
+	});
+
+	it('Will delete a user', async () => {
+		const user = await userService.deleteUser(validUnderscoreID);
+		expect(user).toBe(true);
 	});
 });
