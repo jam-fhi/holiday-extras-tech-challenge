@@ -8,7 +8,8 @@ import {
 	APIDOCS,
 	REGISTER,
 	UPDATE,
-	DELETE
+	DELETE,
+	USER
 } from '../../src/models/RouteConstants';
 import {
 	validID,
@@ -31,6 +32,7 @@ describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
 	const BadRequest = 'Bad Request';
+	const NotFound = 'Not Found';
 	const headerUnderscoreID = '_id';
 	const headerID = 'id';
 	const headerEmail = 'email';
@@ -41,6 +43,14 @@ describe('The host server will provide access to backend functionality', () => {
 
 	const generateAuthToken = jest.fn((email, password) => {
 		return validToken;
+	});
+
+	const getUser = jest.fn(_id => {
+		return true;
+	});
+
+	const getUserFail = jest.fn(_id => {
+		return false;
 	});
 
 	const updateUser = jest.fn(
@@ -119,7 +129,8 @@ describe('The host server will provide access to backend functionality', () => {
 		validateLogin,
 		doLogin,
 		updateUser,
-		deleteUser
+		deleteUser,
+		getUser
 	};
 	const mockUserServiceFail = {
 		validateUser,
@@ -127,7 +138,8 @@ describe('The host server will provide access to backend functionality', () => {
 		doLogin: doLoginFail,
 		insertUser: insertUserFail,
 		updateUser: updateUserFail,
-		deleteUser: deleteUserFail
+		deleteUser: deleteUserFail,
+		getUser: getUserFail
 	};
 	const mockUserServiceError = {
 		validateUser,
@@ -280,6 +292,28 @@ describe('The host server will provide access to backend functionality', () => {
 				.set(headerUnderscoreID, validUnderscoreID);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
+	it('Will get a user', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent
+			.get(`${HOST}:${PORT}/${BASE}/${USER}`)
+			.set(headerUnderscoreID, validUnderscoreID);
+		delete serverReply.header.date;
+		expect(serverReply).toMatchSnapshot();
+	});
+
+	it('Will fail to get a user', async () => {
+		server = new APIServer(mockUserServiceFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
+				.set(headerUnderscoreID, validUnderscoreID);
+		} catch (e) {
+			expect(e.message).toBe(NotFound);
 		}
 	});
 
