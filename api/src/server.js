@@ -7,7 +7,8 @@ import {
 	REGISTER,
 	UPDATE,
 	DELETE,
-	USER
+	USER,
+	ALL_USERS
 } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
@@ -29,6 +30,36 @@ export default class APIServer {
 		/**
 		 * @swagger
 		 *
+		 * /allusers:
+		 *   get:
+		 *     description: Gets all users in the system
+		 *     produces:
+		 *       - application/json
+		 *     responses:
+		 *       200:
+		 *         description: all users returned
+		 *       500:
+		 *         description: internal server error
+		 *       404:
+		 *         description: not found error
+		 */
+		await this.server.get(`/${BASE}/${ALL_USERS}`, async (req, res) => {
+			try {
+				const users = await this.userService.getAllUsers();
+				if (users) {
+					res.json(users);
+				} else {
+					res.sendStatus(HttpStatusCodes.NOT_FOUND);
+				}
+			} catch (e) {
+				console.log(e);
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			}
+		});
+
+		/**
+		 * @swagger
+		 *
 		 * /user:
 		 *   get:
 		 *     description: Allows a user to get their profile details
@@ -42,7 +73,7 @@ export default class APIServer {
 		 *         type: string
 		 *     responses:
 		 *       200:
-		 *         description: created account
+		 *         description: users details returned
 		 *       500:
 		 *         description: internal server error
 		 *       404:

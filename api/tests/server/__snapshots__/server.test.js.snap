@@ -71,6 +71,26 @@ Object {
 }
 `;
 
+exports[`The host server will provide access to backend functionality Will get all users 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "93",
+    "content-type": "application/json; charset=utf-8",
+    "etag": "W/\\"5d-gGYrOf9SlId6jAN7I3Q8pehXznI\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {},
+    "method": "GET",
+    "url": "http://localhost:3001/api/allusers",
+  },
+  "status": 200,
+  "text": "[{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"},{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"}]",
+}
+`;
+
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
 Object {
   "header": Object {

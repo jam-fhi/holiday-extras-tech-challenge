@@ -13,3 +13,16 @@ export const invalidGivenName = '123';
 export const invalidFamilyName = '123';
 export const invalidAbout = '123';
 export const validUnderscoreID = 1234;
+export const validUser = {
+	id: 0,
+	email: 'tom@holextra.com',
+	givenName: 'Tom',
+	familyName: 'Solomon',
+	created: '2020-02-15T13:07:01.000Z',
+	password: 'password',
+	about: 'I like music'
+};
+export const validUserDisplay = {
+	name: 'Tom Solomon',
+	about: 'I like music'
+};

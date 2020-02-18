@@ -9,7 +9,8 @@ import {
 	REGISTER,
 	UPDATE,
 	DELETE,
-	USER
+	USER,
+	ALL_USERS
 } from '../../src/models/RouteConstants';
 import {
 	validID,
@@ -25,8 +26,10 @@ import {
 	invalidGivenName,
 	invalidFamilyName,
 	invalidAbout,
-	validUnderscoreID
+	validUnderscoreID,
+	validUserDisplay
 } from '../CommonData';
+import { valid } from 'joi';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
@@ -43,6 +46,14 @@ describe('The host server will provide access to backend functionality', () => {
 
 	const generateAuthToken = jest.fn((email, password) => {
 		return validToken;
+	});
+
+	const getAllUsers = jest.fn(() => {
+		return [validUserDisplay, validUserDisplay];
+	});
+
+	const getAllUsersFail = jest.fn(() => {
+		return null;
 	});
 
 	const getUser = jest.fn(_id => {
@@ -130,7 +141,8 @@ describe('The host server will provide access to backend functionality', () => {
 		doLogin,
 		updateUser,
 		deleteUser,
-		getUser
+		getUser,
+		getAllUsers
 	};
 	const mockUserServiceFail = {
 		validateUser,
@@ -139,7 +151,8 @@ describe('The host server will provide access to backend functionality', () => {
 		insertUser: insertUserFail,
 		updateUser: updateUserFail,
 		deleteUser: deleteUserFail,
-		getUser: getUserFail
+		getUser: getUserFail,
+		getAllUsers: getAllUsersFail
 	};
 	const mockUserServiceError = {
 		validateUser,
@@ -312,6 +325,28 @@ describe('The host server will provide access to backend functionality', () => {
 			const serverReply = await superagent
 				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
 				.set(headerUnderscoreID, validUnderscoreID);
+		} catch (e) {
+			expect(e.message).toBe(NotFound);
+		}
+	});
+
+	it('Will get all users', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent.get(
+			`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
+		);
+		delete serverReply.header.date;
+		expect(serverReply).toMatchSnapshot();
+	});
+
+	it('Will fail to get all users', async () => {
+		server = new APIServer(mockUserServiceFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent.get(
+				`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
+			);
 		} catch (e) {
 			expect(e.message).toBe(NotFound);
 		}
