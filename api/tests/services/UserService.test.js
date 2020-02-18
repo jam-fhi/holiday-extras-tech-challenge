@@ -49,6 +49,14 @@ describe('User Service', () => {
 		return null;
 	});
 
+	const getAllUsers = jest.fn(() => {
+		return [validUser, validUser];
+	});
+
+	const getAllUsersFail = jest.fn(() => {
+		return null;
+	});
+
 	const insertUser = jest.fn(
 		(id, email, givenName, familyName, created, password, about) => {
 			return true;
@@ -88,7 +96,8 @@ describe('User Service', () => {
 		updateUser,
 		getUserByEmail: getUserByEmailFail,
 		getUserByDBID,
-		deleteUser
+		deleteUser,
+		getAllUsers
 	};
 	const mockUserRepoUpdate = {
 		insertUser,
@@ -104,7 +113,8 @@ describe('User Service', () => {
 		getUserByEmailPassword: getUserByEmailPasswordFail,
 		updateUser: updateUserFail,
 		getUserByEmail: getUserByEmailFail,
-		getUserByDBID
+		getUserByDBID,
+		getAllUsers: getAllUsersFail
 	};
 
 	let userService;
@@ -250,6 +260,16 @@ describe('User Service', () => {
 	it('Will get a user', async () => {
 		const user = await userService.getUser(validUnderscoreID);
 		expect(user).toBe(true);
+	});
+
+	it('Will get all users', async () => {
+		const users = await userService.getAllUsers();
+		expect(users).toMatchSnapshot();
+	});
+
+	it('Will fail to get all usres', async () => {
+		const users = await invalidUserService.getAllUsers();
+		expect(users).toBe(false);
 	});
 
 	it('Will delete a user', async () => {

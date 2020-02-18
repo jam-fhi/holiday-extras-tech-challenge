@@ -137,4 +137,18 @@ export default class UserService {
 		const user = await this.userRepo.getUserByDBID(_id);
 		return user;
 	}
+
+	async getAllUsers() {
+		const users = await this.userRepo.getAllUsers();
+		if (users) {
+			const displayUsers = users.map(user => {
+				return {
+					name: `${user.givenName} ${user.familyName}`,
+					about: user.about
+				};
+			});
+			return displayUsers;
+		}
+		return false;
+	}
 }
