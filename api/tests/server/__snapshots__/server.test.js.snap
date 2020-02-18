@@ -27,6 +27,28 @@ Object {
 }
 `;
 
+exports[`The host server will provide access to backend functionality Will delete a user 1`] = `
+Object {
+  "header": Object {
+    "connection": "close",
+    "content-length": "2",
+    "content-type": "text/plain; charset=utf-8",
+    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
+    "x-powered-by": "Express",
+  },
+  "req": Object {
+    "data": undefined,
+    "headers": Object {
+      "_id": 1234,
+    },
+    "method": "DELETE",
+    "url": "http://localhost:3001/api/delete",
+  },
+  "status": 200,
+  "text": "OK",
+}
+`;
+
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
 Object {
   "header": Object {

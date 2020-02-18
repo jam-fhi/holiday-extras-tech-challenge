@@ -7,7 +7,8 @@ import {
 	BASE,
 	APIDOCS,
 	REGISTER,
-	UPDATE
+	UPDATE,
+	DELETE
 } from '../../src/models/RouteConstants';
 import {
 	validID,
@@ -98,6 +99,14 @@ describe('The host server will provide access to backend functionality', () => {
 		return false;
 	});
 
+	const deleteUser = jest.fn(_id => {
+		return true;
+	});
+
+	const deleteUserFail = jest.fn(_id => {
+		return false;
+	});
+
 	const doLoginError = jest.fn((email, password) => {
 		throw Error('TEST ERROR');
 	});
@@ -109,14 +118,16 @@ describe('The host server will provide access to backend functionality', () => {
 		generateAuthToken,
 		validateLogin,
 		doLogin,
-		updateUser
+		updateUser,
+		deleteUser
 	};
 	const mockUserServiceFail = {
 		validateUser,
 		validateLogin,
 		doLogin: doLoginFail,
 		insertUser: insertUserFail,
-		updateUser: updateUserFail
+		updateUser: updateUserFail,
+		deleteUser: deleteUserFail
 	};
 	const mockUserServiceError = {
 		validateUser,
@@ -211,7 +222,6 @@ describe('The host server will provide access to backend functionality', () => {
 				.set(headerFamilyName, invalidFamilyName)
 				.set(headerPassword, invalidPwd)
 				.set(headerAbout, invalidAbout);
-			set('about', invalidAbout);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -245,8 +255,29 @@ describe('The host server will provide access to backend functionality', () => {
 				.set(headerGivenName, invalidGivenName)
 				.set(headerFamilyName, invalidFamilyName)
 				.set(headerPassword, invalidPwd)
-				.set(headerAbout, invalidAbout)
-				.set('about', invalidAbout);
+				.set(headerAbout, invalidAbout);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
+	it('Will delete a user', async () => {
+		server = new APIServer(mockUserService);
+		await server.startServer(PORT);
+		const serverReply = await superagent
+			.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
+			.set(headerUnderscoreID, validUnderscoreID);
+		delete serverReply.header.date;
+		expect(serverReply).toMatchSnapshot();
+	});
+
+	it('Will fail to delete a user', async () => {
+		server = new APIServer(mockUserServiceFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
+				.set(headerUnderscoreID, validUnderscoreID);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
