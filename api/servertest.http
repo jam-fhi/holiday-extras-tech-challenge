@@ -24,3 +24,8 @@ password: somethinghere
 givenName: Johan
 familyName: Solomon
 about: I like television
+
+###
+
+DELETE http://localhost:3001/api/DELETE
+_id: 5e4b7a7336f29e000879e948

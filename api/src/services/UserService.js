@@ -103,6 +103,12 @@ export default class UserService {
 		return user ? true : false;
 	}
 
+	async deleteUser(_id) {
+		let user;
+		user = await this.userRepo.deleteUser(_id);
+		return user ? true : false;
+	}
+
 	async updateUser(_id, id, email, givenName, familyName, password, about) {
 		const updateUser = await this.userRepo.getUserByDBID(_id);
 		const existingUser = await this.userRepo.getUserByEmail(email);

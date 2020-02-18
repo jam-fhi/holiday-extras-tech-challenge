@@ -126,4 +126,9 @@ describe('User Repository', () => {
 		);
 		expect(userInsert).toBe(validFoundDocument);
 	});
+
+	it('Will delete a user', async () => {
+		const userDelete = await userRepo.deleteUser(validUnderscoreID);
+		expect(userDelete).toBe(validFoundDocument);
+	});
 });

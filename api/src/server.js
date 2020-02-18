@@ -5,7 +5,8 @@ import {
 	BASE,
 	APIDOCS,
 	REGISTER,
-	UPDATE
+	UPDATE,
+	DELETE
 } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
@@ -27,6 +28,40 @@ export default class APIServer {
 		/**
 		 * @swagger
 		 *
+		 * /delete:
+		 *   delete:
+		 *     description: Allows a user to update their profile
+		 *     produces:
+		 *       - application/json
+		 *     parameters:
+		 *       - name: _id
+		 *         description: The mongo database id for the user
+		 *         in: formData
+		 *         required: true
+		 *         type: string
+		 *     responses:
+		 *       200:
+		 *         description: created account
+		 *       500:
+		 *         description: internal server error
+		 */
+		await this.server.delete(`/${BASE}/${DELETE}`, async (req, res) => {
+			try {
+				const userDeleted = await this.userService.deleteUser(req.headers._id);
+				if (userDeleted) {
+					res.sendStatus(HttpStatusCodes.OK);
+				} else {
+					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+				}
+			} catch (e) {
+				console.log(e);
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			}
+		});
+
+		/**
+		 * @swagger
+		 *
 		 * /update:
 		 *   patch:
 		 *     description: Allows a user to update their profile
@@ -35,6 +70,9 @@ export default class APIServer {
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
+		 *         in: formData
+		 *         required: true
+		 *         type: string
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
 		 *         in: formData

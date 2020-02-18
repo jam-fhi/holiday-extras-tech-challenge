@@ -71,4 +71,9 @@ describe('MongoConnection', () => {
 		const insert = await mongoConn.insertOne(dbConn);
 		expect(insert).toMatchSnapshot();
 	});
+
+	it('Will delete a document', async () => {
+		const deleteDoc = await mongoConn.deleteOne(dbConn);
+		expect(deleteDoc).toMatchSnapshot();
+	});
 });
