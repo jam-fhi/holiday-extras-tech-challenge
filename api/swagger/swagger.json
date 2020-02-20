@@ -96,7 +96,7 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
