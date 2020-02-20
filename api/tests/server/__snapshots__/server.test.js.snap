@@ -3,6 +3,7 @@
 exports[`The host server will provide access to backend functionality Will add a new user 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "2",
     "content-type": "text/plain; charset=utf-8",
@@ -30,6 +31,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will delete a user 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "2",
     "content-type": "text/plain; charset=utf-8",
@@ -52,6 +54,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will get a user 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "4",
     "content-type": "application/json; charset=utf-8",
@@ -74,6 +77,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will get all users 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "93",
     "content-type": "application/json; charset=utf-8",
@@ -94,6 +98,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "4181",
     "content-type": "application/json; charset=utf-8",
@@ -114,6 +119,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will login successfully 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "16",
     "content-type": "application/json; charset=utf-8",
@@ -137,6 +143,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will update a user 1`] = `
 Object {
   "header": Object {
+    "access-control-allow-origin": "*",
     "connection": "close",
     "content-length": "2",
     "content-type": "text/plain; charset=utf-8",

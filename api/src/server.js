@@ -12,6 +12,7 @@ import {
 } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
+import cors from 'cors';
 
 export default class APIServer {
 	constructor(userService) {
@@ -23,6 +24,7 @@ export default class APIServer {
 	async setupServer() {
 		await this.server.use(express.json());
 		await this.server.use(express.urlencoded({ extended: true }));
+		await this.server.use(cors());
 		await this.buildAPI();
 	}
 
