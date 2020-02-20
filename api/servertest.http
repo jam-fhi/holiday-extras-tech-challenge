@@ -7,12 +7,16 @@ password: password
 ###
 
 POST http://localhost:3001/api/register
-id: 1234
-email: john@holextra.com
-password: password
-givenName: John
-familyName: Solomon
-about: I like space nships
+content-type: application/json
+
+{ 
+"id": 1234,
+"email": "john@holextra.com",
+"password": "password",
+"givenname": "John",
+"familyname": "Solomon",
+"about": "I like space ships"
+ }
 
 ###
 

@@ -233,7 +233,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - application/json
 		 *     parameters:
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
@@ -274,24 +274,25 @@ export default class APIServer {
 		 *         description: details failed validation
 		 */
 		await this.server.post(`/${BASE}/${REGISTER}`, async (req, res) => {
+			console.log(req.body);
 			try {
 				if (
 					this.userService.validateUser(
-						req.headers.id,
-						req.headers.email,
-						req.headers.givenname,
-						req.headers.familyname,
-						req.headers.password,
-						req.headers.about
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
 					)
 				) {
 					const userInserted = await this.userService.insertUser(
-						req.headers.id,
-						req.headers.email,
-						req.headers.givenname,
-						req.headers.familyname,
-						req.headers.password,
-						req.headers.about
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
 					);
 					if (userInserted) {
 						res.sendStatus(HttpStatusCodes.OK);
