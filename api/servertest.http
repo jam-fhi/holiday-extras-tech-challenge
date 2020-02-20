@@ -28,8 +28,8 @@ content-type: application/json
 "id": 109,
 "email": "me@holextra.com",
 "password": "somethinghere",
-"givenName": "Johan",
-"familyName": "Solomon",
+"givenname": "Johan",
+"familyname": "Solomon",
 "about": "I like television"
 }
 
