@@ -144,7 +144,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - application/json
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -193,22 +193,22 @@ export default class APIServer {
 			try {
 				if (
 					this.userService.validateUser(
-						req.headers.id,
-						req.headers.email,
-						req.headers.givenname,
-						req.headers.familyname,
-						req.headers.password,
-						req.headers.about
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
 					)
 				) {
 					const userUpdated = await this.userService.updateUser(
-						req.headers._id,
-						req.headers.id,
-						req.headers.email,
-						req.headers.givenname,
-						req.headers.familyname,
-						req.headers.password,
-						req.headers.about
+						req.body._id,
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
 					);
 					if (userUpdated) {
 						res.sendStatus(HttpStatusCodes.OK);

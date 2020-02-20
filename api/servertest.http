@@ -21,13 +21,17 @@ content-type: application/json
 ###
 
 PATCH http://localhost:3001/api/update
-_id: 5e4b6871f5a6600007190813
-id: 109
-email: me@holextra.com
-password: somethinghere
-givenName: Johan
-familyName: Solomon
-about: I like television
+content-type: application/json
+
+{
+"_id": "5e4b6871f5a6600007190813",
+"id": 109,
+"email": "me@holextra.com",
+"password": "somethinghere",
+"givenName": "Johan",
+"familyName": "Solomon",
+"about": "I like television"
+}
 
 ###
 
