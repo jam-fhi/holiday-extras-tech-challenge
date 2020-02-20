@@ -243,12 +243,12 @@ export default class APIServer {
 		 *         in: formData
 		 *         required: true
 		 *         type: string
-		 *       - name: givenName
+		 *       - name: givenname
 		 *         description: User's given name
 		 *         in: formData
 		 *         required: true
 		 *         type: string
-		 *       - name: familyName
+		 *       - name: familyname
 		 *         description: User's family name
 		 *         in: formData
 		 *         required: true
