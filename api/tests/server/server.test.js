@@ -43,6 +43,7 @@ describe('The host server will provide access to backend functionality', () => {
 	const headerFamilyName = 'familyName';
 	const headerPassword = 'password';
 	const headerAbout = 'about';
+	const testErrorMessage = 'Test Error';
 
 	const generateAuthToken = jest.fn((email, password) => {
 		return validToken;
@@ -64,6 +65,10 @@ describe('The host server will provide access to backend functionality', () => {
 		return false;
 	});
 
+	const getUserThrowError = jest.fn(_id => {
+		throw new Error(testErrorMessage);
+	});
+
 	const updateUser = jest.fn(
 		(_id, id, email, givenName, familyName, password, about) => {
 			return true;
@@ -76,6 +81,12 @@ describe('The host server will provide access to backend functionality', () => {
 		}
 	);
 
+	const updateUserThrowError = jest.fn(
+		(_id, id, email, givenName, familyName, password, about) => {
+			throw Error(testErrorMessage);
+		}
+	);
+
 	const insertUser = jest.fn(
 		(id, email, givenName, familyName, password, about) => {
 			return true;
@@ -85,6 +96,12 @@ describe('The host server will provide access to backend functionality', () => {
 	const insertUserFail = jest.fn(
 		(id, email, givenName, familyName, password, about) => {
 			return false;
+		}
+	);
+
+	const insertUserThrowError = jest.fn(
+		(id, email, givenName, familyName, password, about) => {
+			throw Error(testErrorMessage);
 		}
 	);
 
@@ -128,9 +145,25 @@ describe('The host server will provide access to backend functionality', () => {
 		return false;
 	});
 
-	const doLoginError = jest.fn((email, password) => {
-		throw Error('TEST ERROR');
+	const deleteUserThrowError = jest.fn(_id => {
+		throw Error(testErrorMessage);
 	});
+
+	const doLoginError = jest.fn((email, password) => {
+		throw Error(testErrorMessage);
+	});
+
+	const getAllUsersThrowError = jest.fn(() => {
+		throw Error(testErrorMessage);
+	});
+
+	const mockUserServiceThrowError = {
+		getAllUsers: getAllUsersThrowError,
+		getUser: getUserThrowError,
+		deleteUser: deleteUserThrowError,
+		updateUser: updateUserThrowError,
+		insertUser: insertUserThrowError
+	};
 
 	const mockUserService = {
 		insertUser,
@@ -144,6 +177,7 @@ describe('The host server will provide access to backend functionality', () => {
 		getUser,
 		getAllUsers
 	};
+
 	const mockUserServiceFail = {
 		validateUser,
 		validateLogin,
@@ -154,11 +188,13 @@ describe('The host server will provide access to backend functionality', () => {
 		getUser: getUserFail,
 		getAllUsers: getAllUsersFail
 	};
+
 	const mockUserServiceError = {
 		validateUser,
 		validateLogin,
 		doLogin: doLoginError
 	};
+
 	const mockUserServiceValidationFail = {
 		validateUser: validateUserFail,
 		validateLogin: validateLoginFail
@@ -252,6 +288,23 @@ describe('The host server will provide access to backend functionality', () => {
 		}
 	});
 
+	it('Will throw an error on add a new user on invalid data', async () => {
+		server = new APIServer(mockUserServiceThrowError);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
+				.set(headerID, invalidID)
+				.set(headerEmail, invalidEmail)
+				.set(headerGivenName, invalidGivenName)
+				.set(headerFamilyName, invalidFamilyName)
+				.set(headerPassword, invalidPwd)
+				.set(headerAbout, invalidAbout);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
 	it('Will update a user', async () => {
 		server = new APIServer(mockUserService);
 		await server.startServer(PORT);
@@ -270,6 +323,24 @@ describe('The host server will provide access to backend functionality', () => {
 
 	it('Will fail to update a user', async () => {
 		server = new APIServer(mockUserServiceFail);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
+				.set(headerUnderscoreID, validUnderscoreID)
+				.set(headerID, invalidID)
+				.set(headerEmail, invalidEmail)
+				.set(headerGivenName, invalidGivenName)
+				.set(headerFamilyName, invalidFamilyName)
+				.set(headerPassword, invalidPwd)
+				.set(headerAbout, invalidAbout);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
+	it('Will throw an error on update a user', async () => {
+		server = new APIServer(mockUserServiceThrowError);
 		await server.startServer(PORT);
 		try {
 			const serverReply = await superagent
@@ -308,6 +379,18 @@ describe('The host server will provide access to backend functionality', () => {
 		}
 	});
 
+	it('Will throw an error on delete a user', async () => {
+		server = new APIServer(mockUserServiceThrowError);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
+				.set(headerUnderscoreID, validUnderscoreID);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
 	it('Will get a user', async () => {
 		server = new APIServer(mockUserService);
 		await server.startServer(PORT);
@@ -330,6 +413,18 @@ describe('The host server will provide access to backend functionality', () => {
 		}
 	});
 
+	it('Will throw an error when user not found', async () => {
+		server = new APIServer(mockUserServiceThrowError);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent
+				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
+				.set(headerUnderscoreID, validUnderscoreID);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
+		}
+	});
+
 	it('Will get all users', async () => {
 		server = new APIServer(mockUserService);
 		await server.startServer(PORT);
@@ -349,6 +444,18 @@ describe('The host server will provide access to backend functionality', () => {
 			);
 		} catch (e) {
 			expect(e.message).toBe(NotFound);
+		}
+	});
+
+	it('Will throw an error on get all users', async () => {
+		server = new APIServer(mockUserServiceThrowError);
+		await server.startServer(PORT);
+		try {
+			const serverReply = await superagent.get(
+				`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
+			);
+		} catch (e) {
+			expect(e.message).toBe(InternalServerError);
 		}
 	});
 
