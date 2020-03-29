@@ -21,8 +21,8 @@ export default class MongoConnection {
 	}
 
 	async getMongoDBConnection() {
+		const client = new MongoClient(this.url, this.getConnectionOptions());
 		try {
-			const client = new MongoClient(this.url, this.getConnectionOptions());
 			await client.connect();
 			return client;
 		} catch (e) {
@@ -73,12 +73,18 @@ export default class MongoConnection {
 
 	async insertOne(collection, insert) {
 		const dbConn = await this.getMongoDBConnection();
-		const insertDocument = await dbConn
-			.db(this.db)
-			.collection(collection)
-			.insertOne(insert);
-		await this.closeConnection(dbConn);
-		return insertDocument.result.n == 1 ? true : false;
+		try {
+			await dbConn
+				.db(this.db)
+				.collection(collection)
+				.insertOne(insert);
+		} catch (e) {
+			// insertOne throws on insert error.
+			throw e;
+		} finally {
+			await this.closeConnection(dbConn);
+		}
+		return true;
 	}
 
 	async closeConnection(dbConn) {

@@ -2,19 +2,28 @@
 jest.setTimeout(45000);
 
 import MongoConnection from '../../src/repository/MongoConnection';
-import UserFixture from './fixture/users.json';
+import { dbSetup, dbTeardown } from './fixture/mongoDBFixture';
+import {
+	validUsername,
+	validPassword,
+	validDB,
+	validCollection,
+	validAuthDB,
+	validHost,
+	validEmail,
+	invalidEmail,
+	validNoFoundDocument
+} from '../CommonData';
 
 describe('MongoConnection', () => {
-	const validCollection = 'test';
-	const validDB = 'users';
 	const validQuery = {
-		email: 'sally@holextra.com'
+		email: validEmail
 	};
 	const validUpdate = {
-		email: 'sally2@holextra.com'
+		email: invalidEmail
 	};
 	const validDelete = {
-		email: 'sally@holextra.com'
+		email: validEmail
 	};
 	const validInsert = {
 		id: 1,
@@ -31,11 +40,6 @@ describe('MongoConnection', () => {
 	const validInsertResult = true;
 	const validDeleteResult = true;
 	const invalidDeleteResult = false;
-	const validUsername = 'accounts';
-	const validPassword = 'password';
-	const validHost = 'localhost';
-	const validAuthDB = 'admin';
-	const validNoFoundDocument = null;
 	const validAllDocsLength = 4;
 	const validNoDocsLength = 0;
 	const invalidUsername = 'notvalid';
@@ -45,19 +49,21 @@ describe('MongoConnection', () => {
 	const invalidDB = 'nodb';
 	const invalidCollection = 'nocollection';
 	const invalidQuery = {
-		email: 'sally1@holextra.com'
+		email: invalidEmail
 	};
 	const invalidUpdate = {
-		email: 'sally@holextra.com'
+		email: validEmail
 	};
 	const invalidDelete = {
-		email: 'samuel@holextra.com'
+		email: invalidEmail
 	};
 	const invalidInsert = null;
 	const authenticationFailedMessage = 'Authentication failed.';
 	const invalidHostMessage = 'getaddrinfo ENOTFOUND remotehost';
 	const invalidDBMessage = 'not authorized on nodb to execute command';
 	const invalidInsertMessage = "Cannot read property '_id' of null";
+	const invalidDuplicateInsertMessage =
+		'E11000 duplicate key error collection:';
 	let mongoConn;
 
 	beforeEach(async () => {
@@ -68,25 +74,25 @@ describe('MongoConnection', () => {
 			validAuthDB,
 			validDB
 		);
-		const client = await mongoConn.getMongoDBConnection();
-		await client
-			.db(validDB)
-			.collection(validCollection)
-			.insertMany(UserFixture);
-		await client.close();
+		await dbSetup(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
 	});
 
 	afterEach(async () => {
-		const client = await mongoConn.getMongoDBConnection();
-		await client
-			.db(validDB)
-			.collection(validCollection)
-			.deleteMany({});
-		await client
-			.db(validDB)
-			.collection(validCollection)
-			.drop();
-		await client.close();
+		await dbTeardown(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
 	});
 
 	it('Will return Mongo Connection options', () => {
@@ -141,7 +147,7 @@ describe('MongoConnection', () => {
 			validDB
 		);
 		try {
-			await badMongoConn.findOne(validCollection, validQuery);
+			await badMongoConn.getMongoDBConnection();
 		} catch (e) {
 			expect(e.message).toBe(invalidHostMessage);
 			done();
@@ -236,16 +242,14 @@ describe('MongoConnection', () => {
 		// Mongo Default behaviour is to create collections that do not exist.
 		expect(insert).toBe(validInsertResult);
 		// Teardown
-		const client = await mongoConn.getMongoDBConnection();
-		await client
-			.db(validDB)
-			.collection(invalidCollection)
-			.deleteMany({});
-		await client
-			.db(validDB)
-			.collection(invalidCollection)
-			.drop();
-		await client.close();
+		await dbTeardown(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			invalidCollection
+		);
 	});
 
 	it('Will fail to insert to the database with an invalid document', async done => {
@@ -254,6 +258,15 @@ describe('MongoConnection', () => {
 		} catch (e) {
 			expect(e.message).toBe(invalidInsertMessage);
 			done();
+		}
+	});
+
+	it('Will fail to insert to the same document twice', async () => {
+		try {
+			const docResult = await mongoConn.findOne(validCollection, validQuery);
+			await mongoConn.insertOne(validCollection, docResult);
+		} catch (e) {
+			expect(e.message).toMatch(invalidDuplicateInsertMessage);
 		}
 	});
 
@@ -280,5 +293,11 @@ describe('MongoConnection', () => {
 	it('Will not find any documents for an invalid collection', async () => {
 		const foundDoc = await mongoConn.findAll(invalidCollection);
 		expect(foundDoc.length).toBe(validNoDocsLength);
+	});
+
+	it('Will close the connection', async () => {
+		const dbConn = await mongoConn.getMongoDBConnection();
+		await mongoConn.closeConnection(dbConn);
+		expect(dbConn.isConnected()).toBe(false);
 	});
 });
