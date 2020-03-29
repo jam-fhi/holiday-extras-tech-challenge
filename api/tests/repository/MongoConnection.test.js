@@ -81,7 +81,7 @@ describe('MongoConnection', () => {
 		await client
 			.db(validDB)
 			.collection(validCollection)
-			.remove({});
+			.deleteMany({});
 		await client
 			.db(validDB)
 			.collection(validCollection)
@@ -240,7 +240,7 @@ describe('MongoConnection', () => {
 		await client
 			.db(validDB)
 			.collection(invalidCollection)
-			.remove({});
+			.deleteMany({});
 		await client
 			.db(validDB)
 			.collection(invalidCollection)
