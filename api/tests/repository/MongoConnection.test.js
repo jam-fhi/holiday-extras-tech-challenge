@@ -12,7 +12,11 @@ import {
 	validHost,
 	validEmail,
 	invalidEmail,
-	validNoFoundDocument
+	validNoFoundDocument,
+	validInsertDocument,
+	validDeleteResult,
+	invalidDeleteResult,
+	validAllDocsLength
 } from '../CommonData';
 
 describe('MongoConnection', () => {
@@ -37,10 +41,6 @@ describe('MongoConnection', () => {
 	};
 	const validUpdateResult = true;
 	const invalidUpdateResult = false;
-	const validInsertResult = true;
-	const validDeleteResult = true;
-	const invalidDeleteResult = false;
-	const validAllDocsLength = 4;
 	const validNoDocsLength = 0;
 	const invalidUsername = 'notvalid';
 	const invalidPassword = 'password1';
@@ -234,7 +234,7 @@ describe('MongoConnection', () => {
 
 	it('Will insert to the database with new values', async () => {
 		const insert = await mongoConn.insertOne(validCollection, validInsert);
-		expect(insert).toBe(validInsertResult);
+		expect(insert).toBe(validInsertDocument);
 	});
 
 	it('Will create a new collection if the collection does not exist', async () => {
