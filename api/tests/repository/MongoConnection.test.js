@@ -7,7 +7,6 @@ import {
 	validUsername,
 	validPassword,
 	validDB,
-	validCollection,
 	validAuthDB,
 	validHost,
 	validEmail,
@@ -39,6 +38,7 @@ describe('MongoConnection', () => {
 		about: 'I like fishing',
 		token: ''
 	};
+	const validCollection = 'test';
 	const validUpdateResult = true;
 	const invalidUpdateResult = false;
 	const validNoDocsLength = 0;
@@ -240,7 +240,7 @@ describe('MongoConnection', () => {
 	it('Will create a new collection if the collection does not exist', async () => {
 		const insert = await mongoConn.insertOne(invalidCollection, validInsert);
 		// Mongo Default behaviour is to create collections that do not exist.
-		expect(insert).toBe(validInsertResult);
+		expect(insert).toBe(validInsertDocument);
 		// Teardown
 		await dbTeardown(
 			validUsername,

@@ -1,4 +1,3 @@
-export const validCollection = 'test';
 export const validDB = 'users';
 export const validUsername = 'accounts';
 export const validPassword = 'password';

@@ -14,7 +14,6 @@ import {
 	invalidPwd,
 	invalidUnderscoreID,
 	validDB,
-	validCollection,
 	validUsername,
 	validPassword,
 	validHost,
@@ -29,6 +28,7 @@ import {
 describe('User Repository', () => {
 	const validUpdateByUnderscoreId = true;
 	const invalidUpdateByUserscoreId = false;
+	const validCollection = 'repoTest';
 	let userRepo;
 
 	beforeEach(async () => {
