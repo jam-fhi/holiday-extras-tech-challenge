@@ -32,43 +32,63 @@ export default class MongoConnection {
 
 	async findOne(collection, query) {
 		const dbConn = await this.getMongoDBConnection();
-		const foundDocument = await dbConn
-			.db(this.db)
-			.collection(collection)
-			.findOne(query);
-		await this.closeConnection(dbConn);
-		return foundDocument;
+		try {
+			const foundDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.findOne(query);
+			return foundDocument;
+		} catch (e) {
+			throw e;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
-	async findAll(collection) {
+	async findAllByQuery(collection, query) {
 		const dbConn = await this.getMongoDBConnection();
-		const allDocs = await dbConn
-			.db(this.db)
-			.collection(collection)
-			.find({})
-			.toArray();
-		await this.closeConnection(dbConn);
-		return allDocs;
+		try {
+			const allDocs = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.find(query)
+				.toArray();
+			return allDocs;
+		} catch (e) {
+			throw e;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
 	async updateOne(collection, query, update) {
 		const dbConn = await this.getMongoDBConnection();
-		const updateDocument = await dbConn
-			.db(this.db)
-			.collection(collection)
-			.updateOne(query, { $set: update });
-		await this.closeConnection(dbConn);
-		return updateDocument.result.nModified == 1 ? true : false;
+		try {
+			const updateDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.updateOne(query, { $set: update });
+			return updateDocument.result.nModified == 1 ? true : false;
+		} catch (e) {
+			throw e;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
 	async deleteOne(collection, query) {
 		const dbConn = await this.getMongoDBConnection();
-		const deleteDocument = await dbConn
-			.db(this.db)
-			.collection(collection)
-			.deleteOne(query);
-		await this.closeConnection(dbConn);
-		return deleteDocument.result.n == 1 ? true : false;
+		try {
+			const deleteDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.deleteOne(query);
+			return deleteDocument.result.n == 1 ? true : false;
+		} catch (e) {
+			throw e;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
 	async insertOne(collection, insert) {
@@ -79,15 +99,10 @@ export default class MongoConnection {
 				.collection(collection)
 				.insertOne(insert);
 		} catch (e) {
-			// insertOne throws on insert error.
 			throw e;
 		} finally {
-			await this.closeConnection(dbConn);
+			await dbConn.close();
 		}
 		return true;
-	}
-
-	async closeConnection(dbConn) {
-		await dbConn.close();
 	}
 }

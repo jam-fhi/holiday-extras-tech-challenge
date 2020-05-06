@@ -22,14 +22,17 @@ import {
 	validInsertDocument,
 	validDeleteResult,
 	invalidDeleteResult,
-	validAllDocsLength
+	validAllDocsLength,
+	invalidCollection
 } from '../CommonData';
 
 describe('User Repository', () => {
 	const validUpdateByUnderscoreId = true;
 	const invalidUpdateByUserscoreId = false;
 	const validCollection = 'repoTest';
+	const invalidResult = undefined;
 	let userRepo;
+	let badUserRepo;
 
 	beforeEach(async () => {
 		await dbSetup(
@@ -48,6 +51,7 @@ describe('User Repository', () => {
 			validDB
 		);
 		userRepo = new UserRepository(mongoClient, validCollection);
+		badUserRepo = new UserRepository(mongoClient, invalidCollection);
 	});
 
 	afterEach(async () => {
@@ -77,6 +81,22 @@ describe('User Repository', () => {
 		expect(user).toBe(validNoFoundDocument);
 	});
 
+	it('Will fail to find one user by email and password', async () => {
+		const user = await badUserRepo.getUserByEmailPassword(validEmail, validPwd);
+		expect(user).toBe(invalidResult);
+	});
+
+	it('Will find all users by email', async () => {
+		const user = await userRepo.getAllUserByEmail(validEmail);
+		delete user[0]._id;
+		expect(user).toMatchSnapshot();
+	});
+
+	it('Will fail to find all users by email', async () => {
+		const user = await badUserRepo.getAllUserByEmail(validEmail);
+		expect(user).toBe(invalidResult);
+	});
+
 	it('Will find one user by email', async () => {
 		const user = await userRepo.getUserByEmail(validEmail);
 		delete user._id;
@@ -88,11 +108,22 @@ describe('User Repository', () => {
 		expect(user).toBe(validNoFoundDocument);
 	});
 
+	it('Will fail to find one user by email', async () => {
+		const user = await badUserRepo.getUserByEmail(validEmail);
+		expect(user).toBe(invalidResult);
+	});
+
 	it('Will find one user by _id', async () => {
 		const userByEmail = await userRepo.getUserByEmail(validEmail);
 		const user = await userRepo.getUserByDBID(userByEmail._id);
 		delete user._id;
 		expect(user).toMatchSnapshot();
+	});
+
+	it('Will fail to find one user by _id', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await badUserRepo.getUserByDBID(userByEmail._id);
+		expect(user).toBe(invalidResult);
 	});
 
 	it('Will not find a user by invalid _id', async () => {
@@ -127,6 +158,20 @@ describe('User Repository', () => {
 		expect(userUpdate).toBe(invalidUpdateByUserscoreId);
 	});
 
+	it('Will fail to update a user', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const userUpdate = await badUserRepo.updateUser(
+			userByEmail._id,
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validPassword,
+			validAbout
+		);
+		expect(userUpdate).toBe(invalidResult);
+	});
+
 	it('Will insert a new user', async () => {
 		const userInsert = await userRepo.insertUser(
 			validID,
@@ -140,6 +185,19 @@ describe('User Repository', () => {
 		expect(userInsert).toBe(validInsertDocument);
 	});
 
+	it('Will fail to insert a new user', async () => {
+		const userInsert = await badUserRepo.insertUser(
+			validID,
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validCreated,
+			validPassword,
+			validAbout
+		);
+		expect(userInsert).toBe(invalidResult);
+	});
+
 	it('Will update the users token', async () => {
 		const userUpdate = await userRepo.saveAuthToken(
 			validEmail,
@@ -147,6 +205,15 @@ describe('User Repository', () => {
 			validToken
 		);
 		expect(userUpdate).toBe(validInsertDocument);
+	});
+
+	it('Will fail to update the users token', async () => {
+		const userUpdate = await badUserRepo.saveAuthToken(
+			validEmail,
+			validPwd,
+			validToken
+		);
+		expect(userUpdate).toBe(invalidResult);
 	});
 
 	it('Will delete a user', async () => {
@@ -160,8 +227,19 @@ describe('User Repository', () => {
 		expect(userDelete).toBe(invalidDeleteResult);
 	});
 
+	it('Will fail to delete a user', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const userDelete = await badUserRepo.deleteUser(userByEmail._id);
+		expect(userDelete).toBe(invalidResult);
+	});
+
 	it('Will find all users', async () => {
 		const users = await userRepo.getAllUsers();
 		expect(users.length).toBe(validAllDocsLength);
+	});
+
+	it('Will fail to find all users', async () => {
+		const users = await badUserRepo.getAllUsers();
+		expect(users).toBe(invalidResult);
 	});
 });

@@ -7,7 +7,7 @@
 		"start": "nodemon -r esm index.js",
 		"test": "./node_modules/.bin/jest --detectOpenHandles",
 		"coverage": "./node_modules/.bin/jest --coverage",
-		"lint": "./node_modules/.bin/eslint src/**",
+		"lint": "./node_modules/.bin/eslint src/** tests/**",
 		"swagger": "./node_modules/.bin/swagger-jsdoc -d swagger/swaggerDef.js -o swagger/swagger.json"
 	},
 	"author": "Jamie Hill",

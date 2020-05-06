@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`User Repository Will find all users by email 1`] = `
+Array [
+  Object {
+    "about": "I like cars",
+    "created": "2020-02-15T13:07:01.000Z",
+    "email": "sally@holextra.com",
+    "familyName": "Solomon",
+    "givenName": "Sally",
+    "id": 3,
+    "password": "password",
+    "token": "",
+  },
+]
+`;
+
 exports[`User Repository Will find one user by _id 1`] = `
 Object {
   "about": "I like cars",

@@ -151,8 +151,7 @@ Object {
     "x-powered-by": "Express",
   },
   "req": Object {
-    "data": undefined,
-    "headers": Object {
+    "data": Object {
       "_id": 1234,
       "about": "I like flowers",
       "email": "test@holextra.com",
@@ -160,6 +159,9 @@ Object {
       "givenname": "Bob",
       "id": 1,
       "password": "password",
+    },
+    "headers": Object {
+      "content-type": "application/json",
     },
     "method": "PATCH",
     "url": "http://localhost:3001/api/update",

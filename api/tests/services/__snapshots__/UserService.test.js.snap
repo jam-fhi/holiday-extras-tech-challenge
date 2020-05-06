@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`User Service Will get a user 1`] = `
+Object {
+  "about": "I like cars",
+  "created": "2020-02-15T13:07:01.000Z",
+  "email": "sally@holextra.com",
+  "familyName": "Solomon",
+  "givenName": "Sally",
+  "id": 3,
+  "password": "password",
+  "token": "",
+}
+`;
+
 exports[`User Service Will get all users 1`] = `
 Array [
   Object {
@@ -7,8 +20,16 @@ Array [
     "name": "Tom Solomon",
   },
   Object {
-    "about": "I like music",
-    "name": "Tom Solomon",
+    "about": "I like films",
+    "name": "Dick Solomon",
+  },
+  Object {
+    "about": "I like books",
+    "name": "Harry Solomon",
+  },
+  Object {
+    "about": "I like cars",
+    "name": "Sally Solomon",
   },
 ]
 `;

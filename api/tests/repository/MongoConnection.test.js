@@ -15,13 +15,15 @@ import {
 	validInsertDocument,
 	validDeleteResult,
 	invalidDeleteResult,
-	validAllDocsLength
+	validAllDocsLength,
+	validUser
 } from '../CommonData';
 
 describe('MongoConnection', () => {
 	const validQuery = {
 		email: validEmail
 	};
+	const validAllDocsQuery = {};
 	const validUpdate = {
 		email: invalidEmail
 	};
@@ -196,6 +198,15 @@ describe('MongoConnection', () => {
 		expect(noResult).toBe(validNoFoundDocument);
 	});
 
+	it('Will fail to insert to the same document twice', async () => {
+		try {
+			const docResult = await mongoConn.findOne(validCollection, validQuery);
+			await mongoConn.insertOne(validCollection, docResult);
+		} catch (e) {
+			expect(e.message).toMatch(invalidDuplicateInsertMessage);
+		}
+	});
+
 	it('Will update the database with new values', async () => {
 		const update = await mongoConn.updateOne(
 			validCollection,
@@ -232,6 +243,21 @@ describe('MongoConnection', () => {
 		expect(update).toBe(invalidUpdateResult);
 	});
 
+	it('Will throw an error when trying to update on an invalid database', async () => {
+		try {
+			const badMongoConn = new MongoConnection(
+				validUsername,
+				validPassword,
+				validHost,
+				validAuthDB,
+				invalidDB
+			);
+			await badMongoConn.updateOne(invalidCollection, validQuery, validUpdate);
+		} catch (e) {
+			expect(e.message).toMatch(invalidDBMessage);
+		}
+	});
+
 	it('Will insert to the database with new values', async () => {
 		const insert = await mongoConn.insertOne(validCollection, validInsert);
 		expect(insert).toBe(validInsertDocument);
@@ -261,15 +287,6 @@ describe('MongoConnection', () => {
 		}
 	});
 
-	it('Will fail to insert to the same document twice', async () => {
-		try {
-			const docResult = await mongoConn.findOne(validCollection, validQuery);
-			await mongoConn.insertOne(validCollection, docResult);
-		} catch (e) {
-			expect(e.message).toMatch(invalidDuplicateInsertMessage);
-		}
-	});
-
 	it('Will delete a document', async () => {
 		const deleteDoc = await mongoConn.deleteOne(validCollection, validDelete);
 		expect(deleteDoc).toBe(validDeleteResult);
@@ -285,19 +302,50 @@ describe('MongoConnection', () => {
 		expect(deleteDoc).toBe(invalidDeleteResult);
 	});
 
-	it('Will find all documents', async () => {
-		const foundDoc = await mongoConn.findAll(validCollection);
-		expect(foundDoc.length).toBe(validAllDocsLength);
+	it('Will throw an error when trying to delete from an invalid database', async () => {
+		try {
+			const badMongoConn = new MongoConnection(
+				validUsername,
+				validPassword,
+				validHost,
+				validAuthDB,
+				invalidDB
+			);
+			await badMongoConn.deleteOne(invalidCollection, validDelete);
+		} catch (e) {
+			expect(e.message).toMatch(invalidDBMessage);
+		}
 	});
 
 	it('Will not find any documents for an invalid collection', async () => {
-		const foundDoc = await mongoConn.findAll(invalidCollection);
+		const foundDoc = await mongoConn.findAllByQuery(
+			invalidCollection,
+			validQuery
+		);
 		expect(foundDoc.length).toBe(validNoDocsLength);
 	});
 
-	it('Will close the connection', async () => {
-		const dbConn = await mongoConn.getMongoDBConnection();
-		await mongoConn.closeConnection(dbConn);
-		expect(dbConn.isConnected()).toBe(false);
+	it('Will find all documents by query', async () => {
+		const foundDoc = await mongoConn.findAllByQuery(
+			validCollection,
+			validAllDocsQuery
+		);
+		expect(foundDoc.length).toBe(validAllDocsLength);
+	});
+
+	it('Will throw an error on find all docs by query', async done => {
+		try {
+			const badMongoConn = new MongoConnection(
+				validUsername,
+				validPassword,
+				validHost,
+				validAuthDB,
+				invalidDB
+			);
+			await badMongoConn.findAllByQuery(invalidCollection, validAllDocsQuery);
+		} catch (e) {
+			expect(e.message).toMatch(invalidDBMessage);
+			done();
+		}
 	});
 });

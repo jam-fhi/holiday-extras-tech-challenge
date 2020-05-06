@@ -1,4 +1,10 @@
+// Mongo exceptions take a long time to appear.
+jest.setTimeout(45000);
+
 import UserService from '../../src/services/UserService';
+import MongoConnection from '../../src/repository/MongoConnection';
+import UserRepository from '../../src/repository/UserRepository';
+import { dbSetup, dbTeardown } from '../repository/fixture/mongoDBFixture';
 import {
 	validID,
 	validGivenName,
@@ -9,130 +15,71 @@ import {
 	invalidEmail,
 	invalidPwd,
 	invalidID,
-	invalidGivenName,
-	invalidFamilyName,
-	invalidAbout,
-	validUnderscoreID,
-	validUser
+	validUser,
+	validUsername,
+	validPassword,
+	validHost,
+	validAuthDB,
+	validDB,
+	validDuplicateEmail,
+	validCreated,
+	invalidUnderscoreID,
+	invalidCollection
 } from '../CommonData';
 
 describe('User Service', () => {
 	const secretKey = 'TRFTS';
 	const validToken = 'abcd';
+	const validCollection = 'userServiceTest';
+	const validLoginResult = true;
+	const invalidLoginResult = false;
+	const validUserResult = true;
+	const invalidUserResult = false;
+	const invalidUserToken = null;
+	const validSaveUserToken = true;
+	const invalidSaveUserToken = false;
+	const validDuplicateByEmail = true;
+	const invalidDuplicateByEmail = false;
+	const validUserUpdate = true;
+	const invalidUserUpdate = false;
+	const validDeleteUser = true;
+	const invalidDeleteUser = false;
+	const invalidGetUser = null;
+	const invalidGetAllUser = false;
 
-	const getUserByDBID = jest.fn(_id => {
-		return true;
-	});
-
-	const saveAuthToken = jest.fn((email, password, token) => {
-		return true;
-	});
-
-	const saveAuthTokenFail = jest.fn((email, password, token) => {
-		return false;
-	});
-
-	const getUserByEmailPassword = jest.fn((email, password) => {
-		return validUser;
-	});
-
-	const getUserByEmailPasswordFail = jest.fn((email, password) => {
-		return null;
-	});
-
-	const getAllUsers = jest.fn(() => {
-		return [validUser, validUser];
-	});
-
-	const getAllUsersFail = jest.fn(() => {
-		return null;
-	});
-
-	const insertUser = jest.fn(
-		(id, email, givenName, familyName, created, password, about) => {
-			return true;
-		}
-	);
-
-	const insertUserFail = jest.fn(
-		(id, email, givenName, familyName, created, password, about) => {
-			return false;
-		}
-	);
-
-	const updateUser = jest.fn(
-		(_id, id, email, givenName, familyName, password, about) => {
-			return true;
-		}
-	);
-
-	const deleteUser = jest.fn(_id => {
-		return true;
-	});
-
-	const updateUserFail = jest.fn(
-		(_id, id, email, givenName, familyName, password, about) => {
-			return false;
-		}
-	);
-
-	const getUserByEmailFail = jest.fn(email => {
-		return false;
-	});
-
-	const mockUserRepo = {
-		insertUser,
-		saveAuthToken,
-		getUserByEmailPassword,
-		updateUser,
-		getUserByEmail: getUserByEmailFail,
-		getUserByDBID,
-		deleteUser,
-		getAllUsers
-	};
-	const mockUserRepoUpdate = {
-		insertUser,
-		saveAuthToken,
-		getUserByEmailPassword,
-		updateUser,
-		getUserByEmail: getUserByEmailFail,
-		getUserByDBID
-	};
-	const mockUserRepoFail = {
-		insertUser: insertUserFail,
-		saveAuthToken: saveAuthTokenFail,
-		getUserByEmailPassword: getUserByEmailPasswordFail,
-		updateUser: updateUserFail,
-		getUserByEmail: getUserByEmailFail,
-		getUserByDBID,
-		getAllUsers: getAllUsersFail
-	};
-
+	let mongoConn;
+	let userRepo;
 	let userService;
-	let invalidUserService;
-	let updateUserService;
-	beforeEach(() => {
-		userService = new UserService(mockUserRepo, secretKey);
-		invalidUserService = new UserService(mockUserRepoFail, secretKey);
-		updateUserService = new UserService(mockUserRepoUpdate, secretKey);
-	});
 
-	it('Will return true for a valid login', async () => {
-		const login = await userService.doLogin(validEmail, validPwd);
-		expect(login).toBe(true);
-	});
-
-	it('Will return false for an invalid login', async () => {
-		const failLogin = await invalidUserService.doLogin(
-			invalidEmail,
-			invalidPwd
+	beforeEach(async () => {
+		await dbSetup(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
 		);
-		expect(failLogin).toBe(false);
+		mongoConn = new MongoConnection(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB
+		);
+		userRepo = new UserRepository(mongoConn, validCollection);
+		userService = new UserService(userRepo, secretKey);
 	});
 
-	it('Will return email and password validation schema', () => {
-		const schema = userService.getUserLoginValidationSchema();
-		expect(schema).toMatchSnapshot();
+	afterEach(async () => {
+		await dbTeardown(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
 	});
 
 	it('Will return user validation schema', () => {
@@ -140,14 +87,39 @@ describe('User Service', () => {
 		expect(schema).toMatchSnapshot();
 	});
 
-	it('Will validate valid emails and password successfully', () => {
-		const valid = userService.validateLogin(validEmail, validPwd);
-		expect(valid).toBe(true);
+	it('Will return email and password validation schema', () => {
+		const schema = userService.getUserLoginValidationSchema();
+		expect(schema).toMatchSnapshot();
 	});
 
-	it('Will fail validation of invalid emails and passwords', () => {
-		const invalid = userService.validateLogin(invalidEmail, invalidPwd);
-		expect(invalid).toBe(false);
+	it('Will return true for a valid login', async () => {
+		const login = await userService.doLogin(validEmail, validPwd);
+		expect(login).toBe(validLoginResult);
+	});
+
+	it('Will return false for an invalid password on login', async () => {
+		const failLogin = await userService.doLogin(validEmail, invalidPwd);
+		expect(failLogin).toBe(invalidLoginResult);
+	});
+
+	it('Will return false for an invalid email on login', async () => {
+		const failLogin = await userService.doLogin(validEmail, invalidPwd);
+		expect(failLogin).toBe(invalidLoginResult);
+	});
+
+	it('Will validate valid emails and password successfully', () => {
+		const valid = userService.validateLogin(validEmail, validPwd);
+		expect(valid).toBe(validLoginResult);
+	});
+
+	it('Will fail validation of invalid emails and valid passwords', () => {
+		const invalid = userService.validateLogin(invalidEmail, validPwd);
+		expect(invalid).toBe(invalidLoginResult);
+	});
+
+	it('Will fail validation of valid emails and invalid passwords', () => {
+		const invalid = userService.validateLogin(validEmail, invalidPwd);
+		expect(invalid).toBe(invalidLoginResult);
 	});
 
 	it('Will validate valid user details successfully', () => {
@@ -165,19 +137,18 @@ describe('User Service', () => {
 	it('Will fail validation of invalid user details', () => {
 		const invalid = userService.validateUser(
 			invalidID,
-			invalidEmail,
-			invalidGivenName,
-			invalidFamilyName,
-			invalidPwd,
-			invalidAbout
+			validEmail,
+			validGivenName,
+			validFamilyName,
+			validPwd,
+			validAbout
 		);
 		expect(invalid).toBe(false);
 	});
 
 	it('Will generate an auth token', () => {
 		const token = userService.generateAuthToken(validEmail, validPwd);
-		// TODO: Test generate an auth token that changes on every call?
-		//expect(token).toMatchSnapshot(token);
+		expect(token).not.toBe(invalidUserToken);
 	});
 
 	it('Will save a user token', async () => {
@@ -186,71 +157,117 @@ describe('User Service', () => {
 			validPwd,
 			validToken
 		);
-		expect(savedToken).toBe(true);
+		expect(savedToken).toBe(validSaveUserToken);
 	});
 
-	it('Will fail to save a user token', async () => {
-		const savedToken = await invalidUserService.saveToken(
-			validEmail,
+	it('Will fail to save a user token when an email is not found', async () => {
+		const savedToken = await userService.saveToken(
+			invalidEmail,
 			validPwd,
 			validToken
 		);
-		expect(savedToken).toBe(false);
+		expect(savedToken).toBe(invalidSaveUserToken);
 	});
 
 	it('Will insert a new user', async () => {
 		const user = await userService.insertUser(
-			validID,
-			validEmail,
-			validGivenName,
-			validFamilyName,
-			validPwd,
-			validAbout
+			validUser.id,
+			validUser.email,
+			validUser.givenName,
+			validUser.familyName,
+			validUser.password,
+			validUser.about
 		);
-		expect(user).toBe(true);
+		expect(user).toBe(validUserResult);
 	});
 
 	it('Will fail to save a new user', async () => {
-		const user = await invalidUserService.insertUser(
-			validID,
-			invalidEmail,
-			validGivenName,
-			validFamilyName,
-			invalidPwd,
-			validAbout
+		const user = await userService.insertUser(
+			validUser.id,
+			validEmail,
+			validUser.givenName,
+			validUser.familyName,
+			validUser.password,
+			validUser.about
 		);
-		expect(user).toBe(false);
+		expect(user).toBe(invalidUserResult);
 	});
 
-	it('Will update a user', async () => {
-		const user = await updateUserService.updateUser(
-			validUnderscoreID,
+	it('Will find a duplicate user by email', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		await userRepo.insertUser(
 			validID,
 			validEmail,
 			validGivenName,
 			validFamilyName,
-			validPwd,
-			validAbout
+			validCreated,
+			validPassword
 		);
-		expect(user).toBe(true);
+		const user = await userService.isUserEmailDuplicated(
+			userByEmail._id,
+			validEmail
+		);
+		expect(user).toBe(validDuplicateByEmail);
 	});
 
-	it('Will fail to update a user', async () => {
-		const user = await invalidUserService.updateUser(
-			validUnderscoreID,
-			invalidID,
-			invalidEmail,
-			invalidGivenName,
-			invalidFamilyName,
-			invalidPwd,
-			invalidAbout
+	it('Will not find a duplicate user by email', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await userService.isUserEmailDuplicated(
+			userByEmail._id,
+			validEmail
 		);
-		expect(user).toBe(false);
+		expect(user).toBe(invalidDuplicateByEmail);
+	});
+
+	it('Will update a user', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await userService.updateUser(
+			userByEmail._id,
+			validUser.id,
+			validEmail,
+			validUser.givenName,
+			validUser.familyName,
+			validUser.password,
+			validUser.about
+		);
+		expect(user).toBe(validUserUpdate);
+	});
+
+	it('Will fail to update a user on duplicate email', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await userService.updateUser(
+			userByEmail._id,
+			validUser.id,
+			validDuplicateEmail,
+			validUser.givenName,
+			validUser.familyName,
+			validUser.password,
+			validUser.about
+		);
+		expect(user).toBe(invalidUserUpdate);
+	});
+
+	it('Will delete a user', async () => {
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await userService.deleteUser(userByEmail._id);
+		expect(user).toBe(validDeleteUser);
+	});
+
+	it('Will fail to delete a user', async () => {
+		const user = await userService.deleteUser(invalidUnderscoreID);
+		expect(user).toBe(invalidDeleteUser);
 	});
 
 	it('Will get a user', async () => {
-		const user = await userService.getUser(validUnderscoreID);
-		expect(user).toBe(true);
+		const userByEmail = await userRepo.getUserByEmail(validEmail);
+		const user = await userService.getUser(userByEmail._id);
+		delete user._id;
+		expect(user).toMatchSnapshot();
+	});
+
+	it('Will fail to get a user', async () => {
+		const user = await userService.getUser(invalidUnderscoreID);
+		expect(user).toBe(invalidGetUser);
 	});
 
 	it('Will get all users', async () => {
@@ -258,13 +275,10 @@ describe('User Service', () => {
 		expect(users).toMatchSnapshot();
 	});
 
-	it('Will fail to get all usres', async () => {
-		const users = await invalidUserService.getAllUsers();
-		expect(users).toBe(false);
-	});
-
-	it('Will delete a user', async () => {
-		const user = await userService.deleteUser(validUnderscoreID);
-		expect(user).toBe(true);
+	it('Will fail to get all users', async () => {
+		const badUserRepo = new UserRepository(mongoConn, invalidCollection);
+		const badUserService = new UserService(badUserRepo, secretKey);
+		const users = await badUserService.getAllUsers();
+		expect(users).toBe(invalidGetAllUser);
 	});
 });
