@@ -16,19 +16,19 @@ import {
 	validDeleteResult,
 	invalidDeleteResult,
 	validAllDocsLength,
-	validUser
+	validUser,
 } from '../CommonData';
 
 describe('MongoConnection', () => {
 	const validQuery = {
-		email: validEmail
+		email: validEmail,
 	};
 	const validAllDocsQuery = {};
 	const validUpdate = {
-		email: invalidEmail
+		email: invalidEmail,
 	};
 	const validDelete = {
-		email: validEmail
+		email: validEmail,
 	};
 	const validInsert = {
 		id: 1,
@@ -38,7 +38,7 @@ describe('MongoConnection', () => {
 		created: '2020-02-17T13:07:01.000Z',
 		password: 'password',
 		about: 'I like fishing',
-		token: ''
+		token: '',
 	};
 	const validCollection = 'test';
 	const validUpdateResult = true;
@@ -51,13 +51,13 @@ describe('MongoConnection', () => {
 	const invalidDB = 'nodb';
 	const invalidCollection = 'nocollection';
 	const invalidQuery = {
-		email: invalidEmail
+		email: invalidEmail,
 	};
 	const invalidUpdate = {
-		email: validEmail
+		email: validEmail,
 	};
 	const invalidDelete = {
-		email: invalidEmail
+		email: invalidEmail,
 	};
 	const invalidInsert = null;
 	const authenticationFailedMessage = 'Authentication failed.';
@@ -66,6 +66,7 @@ describe('MongoConnection', () => {
 	const invalidInsertMessage = "Cannot read property '_id' of null";
 	const invalidDuplicateInsertMessage =
 		'E11000 duplicate key error collection:';
+	const failedToThrow = 'Failed to throw';
 	let mongoConn;
 
 	beforeEach(async () => {
@@ -108,7 +109,7 @@ describe('MongoConnection', () => {
 		expect(docResult).toMatchSnapshot();
 	});
 
-	it('Will throw an error on invalid username', async done => {
+	it('Will throw an error on invalid username', async (done) => {
 		const badMongoConn = new MongoConnection(
 			invalidUsername,
 			validPassword,
@@ -118,13 +119,14 @@ describe('MongoConnection', () => {
 		);
 		try {
 			await badMongoConn.findOne(validQuery);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(authenticationFailedMessage);
 			done();
 		}
 	});
 
-	it('Will throw an error on invalid password', async done => {
+	it('Will throw an error on invalid password', async (done) => {
 		const badMongoConn = new MongoConnection(
 			validUsername,
 			invalidPassword,
@@ -134,13 +136,14 @@ describe('MongoConnection', () => {
 		);
 		try {
 			await badMongoConn.findOne(validCollection, validQuery);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(authenticationFailedMessage);
 			done();
 		}
 	});
 
-	it('Will throw an error on invalid host', async done => {
+	it('Will throw an error on invalid host', async (done) => {
 		const badMongoConn = new MongoConnection(
 			validUsername,
 			validPassword,
@@ -150,13 +153,14 @@ describe('MongoConnection', () => {
 		);
 		try {
 			await badMongoConn.getMongoDBConnection();
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(invalidHostMessage);
 			done();
 		}
 	});
 
-	it('Will throw an error on invalid authdb', async done => {
+	it('Will throw an error on invalid authdb', async (done) => {
 		const badMongoConn = new MongoConnection(
 			validUsername,
 			validPassword,
@@ -166,13 +170,14 @@ describe('MongoConnection', () => {
 		);
 		try {
 			await badMongoConn.findOne(validCollection, validQuery);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(authenticationFailedMessage);
 			done();
 		}
 	});
 
-	it('Will throw an error on invalid db', async done => {
+	it('Will throw an error on invalid db', async (done) => {
 		const badMongoConn = new MongoConnection(
 			validUsername,
 			validPassword,
@@ -182,6 +187,7 @@ describe('MongoConnection', () => {
 		);
 		try {
 			await badMongoConn.findOne(validCollection, validQuery);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toMatch(invalidDBMessage);
 			done();
@@ -202,6 +208,7 @@ describe('MongoConnection', () => {
 		try {
 			const docResult = await mongoConn.findOne(validCollection, validQuery);
 			await mongoConn.insertOne(validCollection, docResult);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toMatch(invalidDuplicateInsertMessage);
 		}
@@ -253,6 +260,7 @@ describe('MongoConnection', () => {
 				invalidDB
 			);
 			await badMongoConn.updateOne(invalidCollection, validQuery, validUpdate);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toMatch(invalidDBMessage);
 		}
@@ -278,9 +286,10 @@ describe('MongoConnection', () => {
 		);
 	});
 
-	it('Will fail to insert to the database with an invalid document', async done => {
+	it('Will fail to insert to the database with an invalid document', async (done) => {
 		try {
 			await mongoConn.insertOne(validCollection, invalidInsert);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(invalidInsertMessage);
 			done();
@@ -312,6 +321,7 @@ describe('MongoConnection', () => {
 				invalidDB
 			);
 			await badMongoConn.deleteOne(invalidCollection, validDelete);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toMatch(invalidDBMessage);
 		}
@@ -333,7 +343,7 @@ describe('MongoConnection', () => {
 		expect(foundDoc.length).toBe(validAllDocsLength);
 	});
 
-	it('Will throw an error on find all docs by query', async done => {
+	it('Will throw an error on find all docs by query', async (done) => {
 		try {
 			const badMongoConn = new MongoConnection(
 				validUsername,
@@ -343,6 +353,7 @@ describe('MongoConnection', () => {
 				invalidDB
 			);
 			await badMongoConn.findAllByQuery(invalidCollection, validAllDocsQuery);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toMatch(invalidDBMessage);
 			done();
