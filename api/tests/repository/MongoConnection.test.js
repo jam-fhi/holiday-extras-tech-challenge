@@ -2,7 +2,7 @@
 jest.setTimeout(45000);
 
 import MongoConnection from '../../src/repository/MongoConnection';
-import { dbSetup, dbTeardown } from './fixture/mongoDBFixture';
+import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
 import {
 	validUsername,
 	validPassword,

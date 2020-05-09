@@ -4,7 +4,7 @@ jest.setTimeout(45000);
 import UserService from '../../src/services/UserService';
 import MongoConnection from '../../src/repository/MongoConnection';
 import UserRepository from '../../src/repository/UserRepository';
-import { dbSetup, dbTeardown } from '../repository/fixture/mongoDBFixture';
+import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
 import {
 	validID,
 	validGivenName,

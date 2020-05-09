@@ -7,7 +7,7 @@ import {
 	dbSetup,
 	dbTeardown,
 	dbClearCollection,
-} from '../repository/fixture/mongoDBFixture';
+} from '../fixture/mongoDBFixture';
 import HttpStatusCodes from 'http-status-codes';
 import {
 	HOST,

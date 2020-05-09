@@ -1,4 +1,4 @@
-import MongoConnection from '../../../src/repository/MongoConnection';
+import MongoConnection from '../../src/repository/MongoConnection';
 import UserFixture from './users.json';
 
 function getMongoClient(username, password, host, authDB, DB) {

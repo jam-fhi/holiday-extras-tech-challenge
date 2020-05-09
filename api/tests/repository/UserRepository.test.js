@@ -1,6 +1,6 @@
 import UserRepository from '../../src/repository/UserRepository';
 import MongoConnection from '../../src/repository/MongoConnection';
-import { dbSetup, dbTeardown } from './fixture/mongoDBFixture';
+import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
 import {
 	validID,
 	validGivenName,
