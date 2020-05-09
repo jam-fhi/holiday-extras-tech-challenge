@@ -16,7 +16,6 @@ import {
 	validDeleteResult,
 	invalidDeleteResult,
 	validAllDocsLength,
-	validUser,
 } from '../CommonData';
 
 describe('MongoConnection', () => {

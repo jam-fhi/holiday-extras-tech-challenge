@@ -27,15 +27,8 @@ import {
 	validAbout,
 	validEmail,
 	validPwd,
-	validToken,
 	invalidEmail,
 	invalidPwd,
-	invalidID,
-	invalidGivenName,
-	invalidFamilyName,
-	invalidAbout,
-	validUnderscoreID,
-	validUserDisplay,
 	validUsername,
 	validPassword,
 	validHost,
@@ -43,7 +36,6 @@ import {
 	validDB,
 	invalidUnderscoreID,
 } from '../CommonData';
-import { valid } from 'joi';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';
@@ -51,13 +43,8 @@ describe('The host server will provide access to backend functionality', () => {
 	const BadRequest = 'Bad Request';
 	const NotFound = 'Not Found';
 	const headerUnderscoreID = '_id';
-	const headerID = 'id';
 	const headerEmail = 'email';
-	const headerGivenName = 'givenName';
-	const headerFamilyName = 'familyName';
 	const headerPassword = 'password';
-	const headerAbout = 'about';
-	const testErrorMessage = 'Test Error';
 	const PORT = 3002;
 	const validCollection = 'userServerTest';
 	const secretKey = 'TRFTS';
