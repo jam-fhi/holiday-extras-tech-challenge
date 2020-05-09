@@ -16,7 +16,7 @@ import {
 	validDeleteResult,
 	invalidDeleteResult,
 	validAllDocsLength,
-} from '../CommonData';
+} from '../fixture/CommonData';
 
 describe('MongoConnection', () => {
 	const validQuery = {

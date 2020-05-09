@@ -35,7 +35,7 @@ import {
 	validAuthDB,
 	validDB,
 	invalidUnderscoreID,
-} from '../CommonData';
+} from '../fixture/CommonData';
 
 describe('The host server will provide access to backend functionality', () => {
 	const InternalServerError = 'Internal Server Error';

@@ -25,7 +25,7 @@ import {
 	validCreated,
 	invalidUnderscoreID,
 	invalidCollection,
-} from '../CommonData';
+} from '../fixture/CommonData';
 
 describe('User Service', () => {
 	const secretKey = 'TRFTS';

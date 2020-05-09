@@ -24,7 +24,7 @@ import {
 	invalidDeleteResult,
 	validAllDocsLength,
 	invalidCollection
-} from '../CommonData';
+} from '../fixture/CommonData';
 
 describe('User Repository', () => {
 	const validUpdateByUnderscoreId = true;
