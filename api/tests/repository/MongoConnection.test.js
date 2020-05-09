@@ -16,30 +16,13 @@ import {
 	validDeleteResult,
 	invalidDeleteResult,
 	validAllDocsLength,
+	failedToThrow,
+	validNotExistingUser,
 } from '../fixture/CommonData';
 
 describe('MongoConnection', () => {
-	const validQuery = {
-		email: validEmail,
-	};
-	const validAllDocsQuery = {};
-	const validUpdate = {
-		email: invalidEmail,
-	};
-	const validDelete = {
-		email: validEmail,
-	};
-	const validInsert = {
-		id: 1,
-		email: 'jerry@holextra.com',
-		givenName: 'Jerry',
-		familyName: 'Solomon',
-		created: '2020-02-17T13:07:01.000Z',
-		password: 'password',
-		about: 'I like fishing',
-		token: '',
-	};
 	const validCollection = 'test';
+	const validAllDocsQuery = {};
 	const validUpdateResult = true;
 	const invalidUpdateResult = false;
 	const validNoDocsLength = 0;
@@ -49,6 +32,23 @@ describe('MongoConnection', () => {
 	const invalidAuthDB = 'blah';
 	const invalidDB = 'nodb';
 	const invalidCollection = 'nocollection';
+	const invalidInsert = null;
+	const authenticationFailedMessage = 'Authentication failed.';
+	const invalidHostMessage = 'getaddrinfo ENOTFOUND remotehost';
+	const invalidDBMessage = 'not authorized on nodb to execute command';
+	const invalidInsertMessage = "Cannot read property '_id' of null";
+	const invalidDuplicateInsertMessage =
+		'E11000 duplicate key error collection:';
+	const validQuery = {
+		email: validEmail,
+	};
+
+	const validUpdate = {
+		email: invalidEmail,
+	};
+	const validDelete = {
+		email: validEmail,
+	};
 	const invalidQuery = {
 		email: invalidEmail,
 	};
@@ -58,14 +58,7 @@ describe('MongoConnection', () => {
 	const invalidDelete = {
 		email: invalidEmail,
 	};
-	const invalidInsert = null;
-	const authenticationFailedMessage = 'Authentication failed.';
-	const invalidHostMessage = 'getaddrinfo ENOTFOUND remotehost';
-	const invalidDBMessage = 'not authorized on nodb to execute command';
-	const invalidInsertMessage = "Cannot read property '_id' of null";
-	const invalidDuplicateInsertMessage =
-		'E11000 duplicate key error collection:';
-	const failedToThrow = 'Failed to throw';
+
 	let mongoConn;
 
 	beforeEach(async () => {
@@ -266,12 +259,18 @@ describe('MongoConnection', () => {
 	});
 
 	it('Will insert to the database with new values', async () => {
-		const insert = await mongoConn.insertOne(validCollection, validInsert);
+		const insert = await mongoConn.insertOne(
+			validCollection,
+			validNotExistingUser
+		);
 		expect(insert).toBe(validInsertDocument);
 	});
 
 	it('Will create a new collection if the collection does not exist', async () => {
-		const insert = await mongoConn.insertOne(invalidCollection, validInsert);
+		const insert = await mongoConn.insertOne(
+			invalidCollection,
+			validNotExistingUser
+		);
 		// Mongo Default behaviour is to create collections that do not exist.
 		expect(insert).toBe(validInsertDocument);
 		// Teardown

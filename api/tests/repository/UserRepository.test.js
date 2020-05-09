@@ -23,14 +23,15 @@ import {
 	validDeleteResult,
 	invalidDeleteResult,
 	validAllDocsLength,
-	invalidCollection
+	invalidCollection,
 } from '../fixture/CommonData';
 
 describe('User Repository', () => {
+	const validCollection = 'repoTest';
 	const validUpdateByUnderscoreId = true;
 	const invalidUpdateByUserscoreId = false;
-	const validCollection = 'repoTest';
 	const invalidResult = undefined;
+
 	let userRepo;
 	let badUserRepo;
 

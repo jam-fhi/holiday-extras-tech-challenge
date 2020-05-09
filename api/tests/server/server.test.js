@@ -35,9 +35,13 @@ import {
 	validAuthDB,
 	validDB,
 	invalidUnderscoreID,
+	secretKey,
+	failedToThrow,
+	validNotExistingUser,
 } from '../fixture/CommonData';
 
 describe('The host server will provide access to backend functionality', () => {
+	const validCollection = 'userServerTest';
 	const InternalServerError = 'Internal Server Error';
 	const Unauthorized = 'Unauthorized';
 	const BadRequest = 'Bad Request';
@@ -46,18 +50,6 @@ describe('The host server will provide access to backend functionality', () => {
 	const headerEmail = 'email';
 	const headerPassword = 'password';
 	const PORT = 3002;
-	const validCollection = 'userServerTest';
-	const secretKey = 'TRFTS';
-	const notUserEmail = 'jeronomo@holextra.com';
-	const failedToThrow = 'Failed to throw';
-	const newValidUser = {
-		id: validID,
-		email: notUserEmail,
-		givenname: validGivenName,
-		familyname: validFamilyName,
-		password: validPwd,
-		about: validAbout,
-	};
 
 	const duplicateUser = {
 		id: validID,
@@ -131,7 +123,7 @@ describe('The host server will provide access to backend functionality', () => {
 		try {
 			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set(headerEmail, notUserEmail)
+				.set(headerEmail, validNotExistingUser.email)
 				.set(headerPassword, validPwd);
 			throw new Error(failedToThrow);
 		} catch (e) {
@@ -152,9 +144,10 @@ describe('The host server will provide access to backend functionality', () => {
 	});
 
 	it('Will add a new user', async () => {
+		delete validNotExistingUser.created;
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-			.send(newValidUser);
+			.send(validNotExistingUser);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
@@ -186,7 +179,7 @@ describe('The host server will provide access to backend functionality', () => {
 		const updateUser = {
 			_id: existingUser._id,
 			id: existingUser.id,
-			email: notUserEmail,
+			email: validNotExistingUser.email,
 			givenname: existingUser.givenName,
 			familyname: existingUser.familyName,
 			password: existingUser.password,
@@ -205,7 +198,7 @@ describe('The host server will provide access to backend functionality', () => {
 			const updateUser = {
 				_id: invalidUnderscoreID,
 				id: existingUser.id,
-				email: notUserEmail,
+				email: validNotExistingUser.email,
 				givenname: existingUser.givenName,
 				familyname: existingUser.familyName,
 				password: existingUser.password,

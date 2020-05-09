@@ -23,10 +23,11 @@ import {
 	invalidUnderscoreID,
 	invalidCollection,
 	validToken,
+	secretKey,
+	validNotExistingUser,
 } from '../fixture/CommonData';
 
 describe('User Service', () => {
-	const secretKey = 'TRFTS';
 	const validCollection = 'userServiceTest';
 	const validDuplicateEmail = 'tom@holextra.com';
 	const invalidID = -1;
@@ -45,16 +46,6 @@ describe('User Service', () => {
 	const invalidDeleteUser = false;
 	const invalidGetUser = null;
 	const invalidGetAllUser = false;
-
-	const validUser = {
-		id: 0,
-		email: 'henry@holextra.com',
-		givenName: 'Henry',
-		familyName: 'Solomon',
-		created: '2020-02-15T13:07:01.000Z',
-		password: 'password',
-		about: 'I like darts',
-	};
 
 	let mongoConn;
 	let userRepo;
@@ -180,24 +171,24 @@ describe('User Service', () => {
 
 	it('Will insert a new user', async () => {
 		const user = await userService.insertUser(
-			validUser.id,
-			validUser.email,
-			validUser.givenName,
-			validUser.familyName,
-			validUser.password,
-			validUser.about
+			validNotExistingUser.id,
+			validNotExistingUser.email,
+			validNotExistingUser.givenname,
+			validNotExistingUser.familyname,
+			validNotExistingUser.password,
+			validNotExistingUser.about
 		);
 		expect(user).toBe(validUserResult);
 	});
 
 	it('Will fail to save a new user', async () => {
 		const user = await userService.insertUser(
-			validUser.id,
+			validNotExistingUser.id,
 			validEmail,
-			validUser.givenName,
-			validUser.familyName,
-			validUser.password,
-			validUser.about
+			validNotExistingUser.givenname,
+			validNotExistingUser.familyname,
+			validNotExistingUser.password,
+			validNotExistingUser.about
 		);
 		expect(user).toBe(invalidUserResult);
 	});
@@ -232,12 +223,12 @@ describe('User Service', () => {
 		const userByEmail = await userRepo.getUserByEmail(validEmail);
 		const user = await userService.updateUser(
 			userByEmail._id,
-			validUser.id,
+			validNotExistingUser.id,
 			validEmail,
-			validUser.givenName,
-			validUser.familyName,
-			validUser.password,
-			validUser.about
+			validNotExistingUser.givenname,
+			validNotExistingUser.familyname,
+			validNotExistingUser.password,
+			validNotExistingUser.about
 		);
 		expect(user).toBe(validUserUpdate);
 	});
@@ -246,12 +237,12 @@ describe('User Service', () => {
 		const userByEmail = await userRepo.getUserByEmail(validEmail);
 		const user = await userService.updateUser(
 			userByEmail._id,
-			validUser.id,
+			validNotExistingUser.id,
 			validDuplicateEmail,
-			validUser.givenName,
-			validUser.familyName,
-			validUser.password,
-			validUser.about
+			validNotExistingUser.givenname,
+			validNotExistingUser.familyname,
+			validNotExistingUser.password,
+			validNotExistingUser.about
 		);
 		expect(user).toBe(invalidUserUpdate);
 	});

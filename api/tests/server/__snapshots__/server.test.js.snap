@@ -12,12 +12,13 @@ Object {
   },
   "req": Object {
     "data": Object {
-      "about": "I like flowers",
-      "email": "jeronomo@holextra.com",
-      "familyname": "Smith",
-      "givenname": "Bob",
+      "about": "I like fishing",
+      "email": "jerry@holextra.com",
+      "familyname": "Solomon",
+      "givenname": "Jerry",
       "id": 1,
       "password": "password",
+      "token": "",
     },
     "headers": Object {
       "content-type": "application/json",
@@ -111,7 +112,7 @@ Object {
 exports[`The host server will provide access to backend functionality Will update a user 1`] = `
 Object {
   "about": "I like cars",
-  "email": "jeronomo@holextra.com",
+  "email": "jerry@holextra.com",
   "familyname": "Solomon",
   "givenname": "Sally",
   "id": 3,
