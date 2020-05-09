@@ -11,40 +11,19 @@ Object {
     "x-powered-by": "Express",
   },
   "req": Object {
-    "data": undefined,
-    "headers": Object {
+    "data": Object {
       "about": "I like flowers",
-      "email": "test@holextra.com",
+      "email": "jeronomo@holextra.com",
       "familyname": "Smith",
       "givenname": "Bob",
       "id": 1,
       "password": "password",
     },
-    "method": "POST",
-    "url": "http://localhost:3001/api/register",
-  },
-  "status": 200,
-  "text": "OK",
-}
-`;
-
-exports[`The host server will provide access to backend functionality Will delete a user 1`] = `
-Object {
-  "header": Object {
-    "access-control-allow-origin": "*",
-    "connection": "close",
-    "content-length": "2",
-    "content-type": "text/plain; charset=utf-8",
-    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
-    "x-powered-by": "Express",
-  },
-  "req": Object {
-    "data": undefined,
     "headers": Object {
-      "_id": 1234,
+      "content-type": "application/json",
     },
-    "method": "DELETE",
-    "url": "http://localhost:3001/api/delete",
+    "method": "POST",
+    "url": "http://localhost:3002/api/register",
   },
   "status": 200,
   "text": "OK",
@@ -53,24 +32,14 @@ Object {
 
 exports[`The host server will provide access to backend functionality Will get a user 1`] = `
 Object {
-  "header": Object {
-    "access-control-allow-origin": "*",
-    "connection": "close",
-    "content-length": "4",
-    "content-type": "application/json; charset=utf-8",
-    "etag": "W/\\"4-X/5TO4MPCKAyY0ipFgr6/IraRNs\\"",
-    "x-powered-by": "Express",
-  },
-  "req": Object {
-    "data": undefined,
-    "headers": Object {
-      "_id": 1234,
-    },
-    "method": "GET",
-    "url": "http://localhost:3001/api/user",
-  },
-  "status": 200,
-  "text": "true",
+  "about": "I like cars",
+  "created": "2020-02-15T13:07:01.000Z",
+  "email": "sally@holextra.com",
+  "familyName": "Solomon",
+  "givenName": "Sally",
+  "id": 3,
+  "password": "password",
+  "token": "",
 }
 `;
 
@@ -79,19 +48,19 @@ Object {
   "header": Object {
     "access-control-allow-origin": "*",
     "connection": "close",
-    "content-length": "93",
+    "content-length": "189",
     "content-type": "application/json; charset=utf-8",
-    "etag": "W/\\"5d-gGYrOf9SlId6jAN7I3Q8pehXznI\\"",
+    "etag": "W/\\"bd-Ikhq8Eb2SsAvoLE4oYy7wLzjcwI\\"",
     "x-powered-by": "Express",
   },
   "req": Object {
     "data": undefined,
     "headers": Object {},
     "method": "GET",
-    "url": "http://localhost:3001/api/allusers",
+    "url": "http://localhost:3002/api/allusers",
   },
   "status": 200,
-  "text": "[{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"},{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"}]",
+  "text": "[{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"},{\\"name\\":\\"Dick Solomon\\",\\"about\\":\\"I like films\\"},{\\"name\\":\\"Harry Solomon\\",\\"about\\":\\"I like books\\"},{\\"name\\":\\"Sally Solomon\\",\\"about\\":\\"I like cars\\"}]",
 }
 `;
 
@@ -109,7 +78,7 @@ Object {
     "data": undefined,
     "headers": Object {},
     "method": "GET",
-    "url": "http://localhost:3001/api/api-docs",
+    "url": "http://localhost:3002/api/api-docs",
   },
   "status": 200,
   "text": "{\\"info\\":{\\"title\\":\\"Amazing Online Profiles!\\",\\"version\\":\\"1.0.0\\",\\"description\\":\\"Technical Challenge for Holiday Extras\\"},\\"host\\":\\"localhost\\",\\"basePath\\":\\"/api\\",\\"swagger\\":\\"2.0\\",\\"paths\\":{\\"/allusers\\":{\\"get\\":{\\"description\\":\\"Gets all users in the system\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"multipart/form-data\\"],\\"responses\\":{\\"200\\":{\\"description\\":\\"all users returned\\"},\\"404\\":{\\"description\\":\\"not found error\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/user\\":{\\"get\\":{\\"description\\":\\"Allows a user to get their profile details\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"multipart/form-data\\"],\\"parameters\\":[{\\"name\\":\\"_id\\",\\"description\\":\\"The mongo database id for the user\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"}],\\"responses\\":{\\"200\\":{\\"description\\":\\"users details returned\\"},\\"404\\":{\\"description\\":\\"not found error\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/delete\\":{\\"delete\\":{\\"description\\":\\"Allows a user to update their profile\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"multipart/form-data\\"],\\"parameters\\":[{\\"name\\":\\"_id\\",\\"description\\":\\"The mongo database id for the user\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"}],\\"responses\\":{\\"200\\":{\\"description\\":\\"deleted account\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/update\\":{\\"patch\\":{\\"description\\":\\"Allows a user to update their profile\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"application/json\\"],\\"parameters\\":[{\\"name\\":\\"_id\\",\\"description\\":\\"The mongo database id for the user\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"id\\",\\"description\\":\\"It was in the requirements, but mongo uses _id. It'll be a special number.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"integer\\"},{\\"name\\":\\"email\\",\\"description\\":\\"Email address to use for login.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"givenName\\",\\"description\\":\\"User's given name\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"familyName\\",\\"description\\":\\"User's family name\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"password\\",\\"description\\":\\"User's password.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"about\\",\\"description\\":\\"Information about a user\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"}],\\"responses\\":{\\"200\\":{\\"description\\":\\"updated account\\"},\\"400\\":{\\"description\\":\\"details failed validation\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/register\\":{\\"post\\":{\\"description\\":\\"Allows a user to register for an awesome profile\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"application/json\\"],\\"parameters\\":[{\\"name\\":\\"id\\",\\"description\\":\\"It was in the requirements, but mongo uses _id. It'll be a special number.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"integer\\"},{\\"name\\":\\"email\\",\\"description\\":\\"Email address to use for login.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"givenname\\",\\"description\\":\\"User's given name\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"familyname\\",\\"description\\":\\"User's family name\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"password\\",\\"description\\":\\"User's password.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"about\\",\\"description\\":\\"Information about a user\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"}],\\"responses\\":{\\"200\\":{\\"description\\":\\"created account\\"},\\"400\\":{\\"description\\":\\"details failed validation\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/login\\":{\\"post\\":{\\"description\\":\\"Login to the application\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"multipart/form-data\\"],\\"parameters\\":[{\\"name\\":\\"email\\",\\"description\\":\\"Email address to use for login.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"},{\\"name\\":\\"password\\",\\"description\\":\\"User's password.\\",\\"in\\":\\"formData\\",\\"required\\":true,\\"type\\":\\"string\\"}],\\"responses\\":{\\"200\\":{\\"description\\":\\"login\\"},\\"400\\":{\\"description\\":\\"login details failed validation\\"},\\"401\\":{\\"description\\":\\"login details failed authentication\\"},\\"500\\":{\\"description\\":\\"internal server error\\"}}}},\\"/api-docs\\":{\\"get\\":{\\"description\\":\\"Displays api docs\\",\\"produces\\":[\\"application/json\\"],\\"consumes\\":[\\"multipart/form-data\\"],\\"responses\\":{\\"200\\":{\\"description\\":\\"Display api docs\\"}}}}},\\"definitions\\":{},\\"responses\\":{},\\"parameters\\":{},\\"securityDefinitions\\":{},\\"tags\\":[]}",
@@ -121,52 +90,31 @@ Object {
   "header": Object {
     "access-control-allow-origin": "*",
     "connection": "close",
-    "content-length": "16",
+    "content-length": "185",
     "content-type": "application/json; charset=utf-8",
-    "etag": "W/\\"10-rg/Jenyov8fS28vztgwFapxQxKk\\"",
     "x-powered-by": "Express",
   },
   "req": Object {
     "data": undefined,
     "headers": Object {
-      "email": "test@holextra.com",
+      "email": "sally@holextra.com",
       "password": "password",
     },
     "method": "POST",
-    "url": "http://localhost:3001/api/login",
+    "url": "http://localhost:3002/api/login",
   },
   "status": 200,
-  "text": "{\\"token\\":\\"abcd\\"}",
+  "text": undefined,
 }
 `;
 
 exports[`The host server will provide access to backend functionality Will update a user 1`] = `
 Object {
-  "header": Object {
-    "access-control-allow-origin": "*",
-    "connection": "close",
-    "content-length": "2",
-    "content-type": "text/plain; charset=utf-8",
-    "etag": "W/\\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\\"",
-    "x-powered-by": "Express",
-  },
-  "req": Object {
-    "data": Object {
-      "_id": 1234,
-      "about": "I like flowers",
-      "email": "test@holextra.com",
-      "familyname": "Smith",
-      "givenname": "Bob",
-      "id": 1,
-      "password": "password",
-    },
-    "headers": Object {
-      "content-type": "application/json",
-    },
-    "method": "PATCH",
-    "url": "http://localhost:3001/api/update",
-  },
-  "status": 200,
-  "text": "OK",
+  "about": "I like cars",
+  "email": "jeronomo@holextra.com",
+  "familyname": "Solomon",
+  "givenname": "Sally",
+  "id": 3,
+  "password": "password",
 }
 `;

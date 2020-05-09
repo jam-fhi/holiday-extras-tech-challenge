@@ -16,10 +16,7 @@ export async function dbSetup(
 ) {
 	const mongoConn = getMongoClient(username, password, host, authDB, DB);
 	const client = await mongoConn.getMongoDBConnection();
-	await client
-		.db(DB)
-		.collection(collection)
-		.insertMany(UserFixture);
+	await client.db(DB).collection(collection).insertMany(UserFixture);
 	await client.close();
 }
 
@@ -33,13 +30,21 @@ export async function dbTeardown(
 ) {
 	const mongoConn = getMongoClient(username, password, host, authDB, DB);
 	const client = await mongoConn.getMongoDBConnection();
-	await client
-		.db(DB)
-		.collection(collection)
-		.deleteMany({});
-	await client
-		.db(DB)
-		.collection(collection)
-		.drop();
+	await client.db(DB).collection(collection).deleteMany({});
+	await client.db(DB).collection(collection).drop();
+	await client.close();
+}
+
+export async function dbClearCollection(
+	username,
+	password,
+	host,
+	authDB,
+	DB,
+	collection
+) {
+	const mongoConn = getMongoClient(username, password, host, authDB, DB);
+	const client = await mongoConn.getMongoDBConnection();
+	await client.db(DB).collection(collection).deleteMany({});
 	await client.close();
 }

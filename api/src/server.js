@@ -8,7 +8,7 @@ import {
 	UPDATE,
 	DELETE,
 	USER,
-	ALL_USERS
+	ALL_USERS,
 } from './models/RouteConstants';
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
@@ -48,16 +48,11 @@ export default class APIServer {
 		 *         description: not found error
 		 */
 		await this.server.get(`/${BASE}/${ALL_USERS}`, async (req, res) => {
-			try {
-				const users = await this.userService.getAllUsers();
-				if (users) {
-					res.json(users);
-				} else {
-					res.sendStatus(HttpStatusCodes.NOT_FOUND);
-				}
-			} catch (e) {
-				console.log(e);
-				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			const users = await this.userService.getAllUsers();
+			if (users) {
+				res.json(users);
+			} else {
+				res.sendStatus(HttpStatusCodes.NOT_FOUND);
 			}
 		});
 
@@ -86,16 +81,11 @@ export default class APIServer {
 		 *         description: not found error
 		 */
 		await this.server.get(`/${BASE}/${USER}`, async (req, res) => {
-			try {
-				const user = await this.userService.getUser(req.headers._id);
-				if (user) {
-					res.json(user);
-				} else {
-					res.sendStatus(HttpStatusCodes.NOT_FOUND);
-				}
-			} catch (e) {
-				console.log(e);
-				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			const user = await this.userService.getUser(req.headers._id);
+			if (user) {
+				res.json(user);
+			} else {
+				res.sendStatus(HttpStatusCodes.NOT_FOUND);
 			}
 		});
 
@@ -122,15 +112,10 @@ export default class APIServer {
 		 *         description: internal server error
 		 */
 		await this.server.delete(`/${BASE}/${DELETE}`, async (req, res) => {
-			try {
-				const userDeleted = await this.userService.deleteUser(req.headers._id);
-				if (userDeleted) {
-					res.sendStatus(HttpStatusCodes.OK);
-				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-				}
-			} catch (e) {
-				console.log(e);
+			const userDeleted = await this.userService.deleteUser(req.headers._id);
+			if (userDeleted) {
+				res.sendStatus(HttpStatusCodes.OK);
+			} else {
 				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 			}
 		});
@@ -190,37 +175,32 @@ export default class APIServer {
 		 *         description: details failed validation
 		 */
 		await this.server.patch(`/${BASE}/${UPDATE}`, async (req, res) => {
-			try {
-				if (
-					this.userService.validateUser(
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					)
-				) {
-					const userUpdated = await this.userService.updateUser(
-						req.body._id,
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					);
-					if (userUpdated) {
-						res.sendStatus(HttpStatusCodes.OK);
-					} else {
-						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-					}
+			if (
+				this.userService.validateUser(
+					req.body.id,
+					req.body.email,
+					req.body.givenname,
+					req.body.familyname,
+					req.body.password,
+					req.body.about
+				)
+			) {
+				const userUpdated = await this.userService.updateUser(
+					req.body._id,
+					req.body.id,
+					req.body.email,
+					req.body.givenname,
+					req.body.familyname,
+					req.body.password,
+					req.body.about
+				);
+				if (userUpdated) {
+					res.send(req.body);
 				} else {
-					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
+					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 				}
-			} catch (e) {
-				console.log(e);
-				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			} else {
+				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
 		});
 
@@ -274,37 +254,31 @@ export default class APIServer {
 		 *         description: details failed validation
 		 */
 		await this.server.post(`/${BASE}/${REGISTER}`, async (req, res) => {
-			console.log(req.body);
-			try {
-				if (
-					this.userService.validateUser(
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					)
-				) {
-					const userInserted = await this.userService.insertUser(
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					);
-					if (userInserted) {
-						res.sendStatus(HttpStatusCodes.OK);
-					} else {
-						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-					}
+			if (
+				this.userService.validateUser(
+					req.body.id,
+					req.body.email,
+					req.body.givenname,
+					req.body.familyname,
+					req.body.password,
+					req.body.about
+				)
+			) {
+				const userInserted = await this.userService.insertUser(
+					req.body.id,
+					req.body.email,
+					req.body.givenname,
+					req.body.familyname,
+					req.body.password,
+					req.body.about
+				);
+				if (userInserted) {
+					res.sendStatus(HttpStatusCodes.OK);
 				} else {
-					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
+					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 				}
-			} catch (e) {
-				console.log(e);
-				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			} else {
+				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
 		});
 
@@ -340,37 +314,29 @@ export default class APIServer {
 		 *         description: login details failed authentication
 		 */
 		await this.server.post(`/${BASE}/${LOGIN}`, async (req, res) => {
-			try {
-				if (
-					this.userService.validateLogin(
-						req.headers.email,
-						req.headers.password
-					)
-				) {
-					const userLogin = await this.userService.doLogin(
+			if (
+				this.userService.validateLogin(req.headers.email, req.headers.password)
+			) {
+				const userLogin = await this.userService.doLogin(
+					req.headers.email,
+					req.headers.password
+				);
+				if (userLogin) {
+					const token = this.userService.generateAuthToken(
 						req.headers.email,
 						req.headers.password
 					);
-					if (userLogin) {
-						const token = this.userService.generateAuthToken(
-							req.headers.email,
-							req.headers.password
-						);
-						this.userService.saveToken(
-							req.headers.email,
-							req.headers.password,
-							token
-						);
-						res.json({ token });
-					} else {
-						res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
-					}
+					this.userService.saveToken(
+						req.headers.email,
+						req.headers.password,
+						token
+					);
+					res.json({ token });
 				} else {
-					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
+					res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
 				}
-			} catch (e) {
-				console.log(e);
-				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+			} else {
+				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
 		});
 

@@ -10,27 +10,16 @@ export default class UserService {
 	getUserValidationSchema() {
 		return Joi.object()
 			.keys({
-				id: Joi.number()
-					.integer()
-					.min(0)
-					.max(2020),
+				id: Joi.number().integer().min(0).max(2020),
 				email: Joi.string().email({ minDomainAtoms: 2 }),
-				givenName: Joi.string()
-					.alphanum()
-					.min(3)
-					.max(30)
-					.required(),
-				familyName: Joi.string()
-					.alphanum()
-					.min(3)
-					.max(30)
-					.required(),
+				givenName: Joi.string().alphanum().min(3).max(30).required(),
+				familyName: Joi.string().alphanum().min(3).max(30).required(),
 				password: Joi.string()
 					.regex(/^[a-zA-Z0-9]{3,30}$/)
 					.required(),
 				about: Joi.string()
 					.regex(/^[a-zA-Z0-9 .-:;]{3,255}$/)
-					.required()
+					.required(),
 			})
 			.with('email', 'password');
 	}
@@ -39,7 +28,7 @@ export default class UserService {
 		return Joi.object()
 			.keys({
 				email: Joi.string().email({ minDomainAtoms: 2 }),
-				password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/)
+				password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
 			})
 			.with('email', 'password');
 	}
@@ -88,8 +77,9 @@ export default class UserService {
 
 	async insertUser(id, email, givenName, familyName, password, about) {
 		const currentDate = new Date();
+		const userExists = await this.userRepo.getUserByEmail(email);
 		let user;
-		if (!(await this.userRepo.getUserByEmail(email))) {
+		if (!userExists) {
 			user = await this.userRepo.insertUser(
 				id,
 				email,
@@ -106,7 +96,7 @@ export default class UserService {
 	async isUserEmailDuplicated(_id, email) {
 		const users = await this.userRepo.getAllUserByEmail(email);
 		let duplicate = 0;
-		users.forEach(user => {
+		users.forEach((user) => {
 			if (`${user._id}`.indexOf(_id) < 0) ++duplicate;
 		});
 		return duplicate > 0 ? true : false;
@@ -143,13 +133,15 @@ export default class UserService {
 	async getAllUsers() {
 		const users = await this.userRepo.getAllUsers();
 		if (users) {
-			const displayUsers = users.map(user => {
-				return {
-					name: `${user.givenName} ${user.familyName}`,
-					about: user.about
-				};
-			});
-			return displayUsers;
+			if (users.length > 0) {
+				const displayUsers = users.map((user) => {
+					return {
+						name: `${user.givenName} ${user.familyName}`,
+						about: user.about,
+					};
+				});
+				return displayUsers;
+			}
 		}
 		return false;
 	}

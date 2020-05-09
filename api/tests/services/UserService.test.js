@@ -24,7 +24,7 @@ import {
 	validDuplicateEmail,
 	validCreated,
 	invalidUnderscoreID,
-	invalidCollection
+	invalidCollection,
 } from '../CommonData';
 
 describe('User Service', () => {

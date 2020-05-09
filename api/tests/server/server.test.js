@@ -1,7 +1,15 @@
 import APIServer from '../../src/server';
 import superagent from 'superagent';
+import UserService from '../../src/services/UserService';
+import MongoConnection from '../../src/repository/MongoConnection';
+import UserRepository from '../../src/repository/UserRepository';
 import {
-	PORT,
+	dbSetup,
+	dbTeardown,
+	dbClearCollection,
+} from '../repository/fixture/mongoDBFixture';
+import HttpStatusCodes from 'http-status-codes';
+import {
 	HOST,
 	LOGIN,
 	BASE,
@@ -10,7 +18,7 @@ import {
 	UPDATE,
 	DELETE,
 	USER,
-	ALL_USERS
+	ALL_USERS,
 } from '../../src/models/RouteConstants';
 import {
 	validID,
@@ -27,7 +35,13 @@ import {
 	invalidFamilyName,
 	invalidAbout,
 	validUnderscoreID,
-	validUserDisplay
+	validUserDisplay,
+	validUsername,
+	validPassword,
+	validHost,
+	validAuthDB,
+	validDB,
+	invalidUnderscoreID,
 } from '../CommonData';
 import { valid } from 'joi';
 
@@ -44,404 +58,242 @@ describe('The host server will provide access to backend functionality', () => {
 	const headerPassword = 'password';
 	const headerAbout = 'about';
 	const testErrorMessage = 'Test Error';
-
-	const generateAuthToken = jest.fn((email, password) => {
-		return validToken;
-	});
-
-	const getAllUsers = jest.fn(() => {
-		return [validUserDisplay, validUserDisplay];
-	});
-
-	const getAllUsersFail = jest.fn(() => {
-		return null;
-	});
-
-	const getUser = jest.fn(_id => {
-		return true;
-	});
-
-	const getUserFail = jest.fn(_id => {
-		return false;
-	});
-
-	const getUserThrowError = jest.fn(_id => {
-		throw new Error(testErrorMessage);
-	});
-
-	const updateUser = jest.fn(
-		(_id, id, email, givenName, familyName, password, about) => {
-			return true;
-		}
-	);
-
-	const updateUserFail = jest.fn(
-		(_id, id, email, givenName, familyName, password, about) => {
-			return false;
-		}
-	);
-
-	const updateUserThrowError = jest.fn(
-		(_id, id, email, givenName, familyName, password, about) => {
-			throw Error(testErrorMessage);
-		}
-	);
-
-	const insertUser = jest.fn(
-		(id, email, givenName, familyName, password, about) => {
-			return true;
-		}
-	);
-
-	const insertUserFail = jest.fn(
-		(id, email, givenName, familyName, password, about) => {
-			return false;
-		}
-	);
-
-	const insertUserThrowError = jest.fn(
-		(id, email, givenName, familyName, password, about) => {
-			throw Error(testErrorMessage);
-		}
-	);
-
-	const validateUser = jest.fn(
-		(id, email, givenName, familyName, password, about) => {
-			return true;
-		}
-	);
-
-	const validateUserFail = jest.fn(
-		(id, email, givenName, familyName, password, about) => {
-			return false;
-		}
-	);
-
-	const validateLogin = jest.fn((email, password) => {
-		return true;
-	});
-
-	const validateLoginFail = jest.fn((email, password) => {
-		return false;
-	});
-
-	const saveToken = jest.fn((email, password, token) => {
-		return true;
-	});
-
-	const doLogin = jest.fn((email, password) => {
-		return true;
-	});
-
-	const doLoginFail = jest.fn((email, password) => {
-		return false;
-	});
-
-	const deleteUser = jest.fn(_id => {
-		return true;
-	});
-
-	const deleteUserFail = jest.fn(_id => {
-		return false;
-	});
-
-	const deleteUserThrowError = jest.fn(_id => {
-		throw Error(testErrorMessage);
-	});
-
-	const doLoginError = jest.fn((email, password) => {
-		throw Error(testErrorMessage);
-	});
-
-	const getAllUsersThrowError = jest.fn(() => {
-		throw Error(testErrorMessage);
-	});
-
-	const mockUserServiceThrowError = {
-		getAllUsers: getAllUsersThrowError,
-		getUser: getUserThrowError,
-		deleteUser: deleteUserThrowError,
-		updateUser: updateUserThrowError,
-		insertUser: insertUserThrowError
+	const PORT = 3002;
+	const validCollection = 'userServerTest';
+	const secretKey = 'TRFTS';
+	const notUserEmail = 'jeronomo@holextra.com';
+	const failedToThrow = 'Failed to throw';
+	const newValidUser = {
+		id: validID,
+		email: notUserEmail,
+		givenname: validGivenName,
+		familyname: validFamilyName,
+		password: validPwd,
+		about: validAbout,
 	};
 
-	const mockUserService = {
-		insertUser,
-		validateUser,
-		saveToken,
-		generateAuthToken,
-		validateLogin,
-		doLogin,
-		updateUser,
-		deleteUser,
-		getUser,
-		getAllUsers
-	};
-
-	const mockUserServiceFail = {
-		validateUser,
-		validateLogin,
-		doLogin: doLoginFail,
-		insertUser: insertUserFail,
-		updateUser: updateUserFail,
-		deleteUser: deleteUserFail,
-		getUser: getUserFail,
-		getAllUsers: getAllUsersFail
-	};
-
-	const mockUserServiceError = {
-		validateUser,
-		validateLogin,
-		doLogin: doLoginError
-	};
-
-	const mockUserServiceValidationFail = {
-		validateUser: validateUserFail,
-		validateLogin: validateLoginFail
-	};
-
-	const validUpdateUser = {
-		_id: validUnderscoreID,
+	const duplicateUser = {
 		id: validID,
 		email: validEmail,
 		givenname: validGivenName,
 		familyname: validFamilyName,
 		password: validPwd,
-		about: validAbout
+		about: validAbout,
 	};
 
-	const invalidUpdateUser = {
-		_id: validUnderscoreID,
-		id: invalidID,
+	const badDataUser = {
+		id: validID,
 		email: invalidEmail,
-		givenname: invalidGivenName,
-		familyname: invalidFamilyName,
-		password: invalidPwd,
-		about: invalidAbout
+		givenname: validGivenName,
+		familyname: validFamilyName,
+		password: validPwd,
+		about: validAbout,
 	};
 
 	let server;
-	/*
+	let mongoConn;
+	let userRepo;
+	let userService;
+
+	beforeEach(async () => {
+		await dbSetup(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
+		mongoConn = new MongoConnection(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB
+		);
+		userRepo = new UserRepository(mongoConn, validCollection);
+		userService = new UserService(userRepo, secretKey);
+		server = new APIServer(userService);
+		await server.startServer(PORT);
+	});
+
 	afterEach(async () => {
 		await server.stopServer();
+		await dbTeardown(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
 	});
 
 	it('Will login successfully', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 			.set(headerEmail, validEmail)
 			.set(headerPassword, validPwd);
 		delete serverReply.header.date;
+		delete serverReply.header.etag;
+		delete serverReply.text;
 		expect(serverReply).toMatchSnapshot();
 	});
 
 	it('Will fail login authorization', async () => {
-		server = new APIServer(mockUserServiceFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set(headerEmail, validEmail)
+				.set(headerEmail, notUserEmail)
 				.set(headerPassword, validPwd);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(Unauthorized);
 		}
 	});
 
 	it('Will fail login validation', async () => {
-		server = new APIServer(mockUserServiceValidationFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set(headerEmail, invalidEmail)
 				.set(headerPassword, invalidPwd);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
 	});
 
-	it('Will have an error on login', async () => {
-		server = new APIServer(mockUserServiceError);
-		await server.startServer(PORT);
-		try {
-			const serverReply = await superagent
-				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
-				.set(headerEmail, validEmail)
-				.set(headerPassword, validPwd);
-		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
-		}
-	});
-
 	it('Will add a new user', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
 		const serverReply = await superagent
 			.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-			.set(headerID, validID)
-			.set(headerEmail, validEmail)
-			.set(headerGivenName, validGivenName)
-			.set(headerFamilyName, validFamilyName)
-			.set(headerPassword, validPwd)
-			.set(headerAbout, validAbout);
+			.send(newValidUser);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
 	});
 
 	it('Will fail to add a new user on invalid data', async () => {
-		server = new APIServer(mockUserServiceValidationFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-				.set(headerID, invalidID)
-				.set(headerEmail, invalidEmail)
-				.set(headerGivenName, invalidGivenName)
-				.set(headerFamilyName, invalidFamilyName)
-				.set(headerPassword, invalidPwd)
-				.set(headerAbout, invalidAbout);
+				.send(badDataUser);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
 	});
 
-	it('Will throw an error on add a new user on invalid data', async () => {
-		server = new APIServer(mockUserServiceThrowError);
-		await server.startServer(PORT);
+	it('Will not add a duplicate email address', async () => {
 		try {
-			const serverReply = await superagent
+			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
-				.set(headerID, invalidID)
-				.set(headerEmail, invalidEmail)
-				.set(headerGivenName, invalidGivenName)
-				.set(headerFamilyName, invalidFamilyName)
-				.set(headerPassword, invalidPwd)
-				.set(headerAbout, invalidAbout);
+				.send(duplicateUser);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
 	});
 
 	it('Will update a user', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
+		const existingUser = await userRepo.getUserByEmail(validEmail);
+		const updateUser = {
+			_id: existingUser._id,
+			id: existingUser.id,
+			email: notUserEmail,
+			givenname: existingUser.givenName,
+			familyname: existingUser.familyName,
+			password: existingUser.password,
+			about: existingUser.about,
+		};
 		const serverReply = await superagent
 			.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
-			.send(validUpdateUser);
-		delete serverReply.header.date;
-		expect(serverReply).toMatchSnapshot();
+			.send(updateUser);
+		delete serverReply.body._id;
+		expect(serverReply.body).toMatchSnapshot();
 	});
 
 	it('Will fail to update a user', async () => {
-		server = new APIServer(mockUserServiceFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			const existingUser = await userRepo.getUserByEmail(validEmail);
+			const updateUser = {
+				_id: invalidUnderscoreID,
+				id: existingUser.id,
+				email: notUserEmail,
+				givenname: existingUser.givenName,
+				familyname: existingUser.familyName,
+				password: existingUser.password,
+				about: existingUser.about,
+			};
+			await superagent
 				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
-				.send(invalidUpdateUser);
+				.send(updateUser);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
 	});
 
 	it('Will fail to validate a user', async () => {
-		server = new APIServer(mockUserServiceValidationFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			const existingUser = await userRepo.getUserByEmail(validEmail);
+			const updateUser = {
+				_id: existingUser._id,
+				id: existingUser.id,
+				email: invalidEmail,
+				givenname: existingUser.givenName,
+				familyname: existingUser.familyName,
+				password: existingUser.password,
+				about: existingUser.about,
+			};
+			await superagent
 				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
-				.send(invalidUpdateUser);
+				.send(updateUser);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
 	});
 
-	it('Will throw an error on update a user', async () => {
-		server = new APIServer(mockUserServiceThrowError);
-		await server.startServer(PORT);
-		try {
-			const serverReply = await superagent
-				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
-				.send(validUpdateUser);
-		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
-		}
-	});
-
 	it('Will delete a user', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
+		const existingUser = await userRepo.getUserByEmail(validEmail);
 		const serverReply = await superagent
 			.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
-			.set(headerUnderscoreID, validUnderscoreID);
-		delete serverReply.header.date;
-		expect(serverReply).toMatchSnapshot();
+			.set(headerUnderscoreID, existingUser._id);
+		expect(serverReply.status).toBe(HttpStatusCodes.OK);
 	});
 
 	it('Will fail to delete a user', async () => {
-		server = new APIServer(mockUserServiceFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			await superagent
 				.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
-				.set(headerUnderscoreID, validUnderscoreID);
-		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
-		}
-	});
-
-	it('Will throw an error on delete a user', async () => {
-		server = new APIServer(mockUserServiceThrowError);
-		await server.startServer(PORT);
-		try {
-			const serverReply = await superagent
-				.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
-				.set(headerUnderscoreID, validUnderscoreID);
+				.set(headerUnderscoreID, invalidUnderscoreID);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
 	});
 
 	it('Will get a user', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
+		const existingUser = await userRepo.getUserByEmail(validEmail);
 		const serverReply = await superagent
 			.get(`${HOST}:${PORT}/${BASE}/${USER}`)
-			.set(headerUnderscoreID, validUnderscoreID);
-		delete serverReply.header.date;
-		expect(serverReply).toMatchSnapshot();
+			.set(headerUnderscoreID, existingUser._id);
+		delete serverReply.body._id;
+		expect(serverReply.body).toMatchSnapshot();
 	});
 
 	it('Will fail to get a user', async () => {
-		server = new APIServer(mockUserServiceFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent
+			await superagent
 				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
-				.set(headerUnderscoreID, validUnderscoreID);
+				.set(headerUnderscoreID, invalidUnderscoreID);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(NotFound);
 		}
 	});
 
-	it('Will throw an error when user not found', async () => {
-		server = new APIServer(mockUserServiceThrowError);
-		await server.startServer(PORT);
-		try {
-			const serverReply = await superagent
-				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
-				.set(headerUnderscoreID, validUnderscoreID);
-		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
-		}
-	});
-
 	it('Will get all users', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
 		const serverReply = await superagent.get(
 			`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
 		);
@@ -450,36 +302,32 @@ describe('The host server will provide access to backend functionality', () => {
 	});
 
 	it('Will fail to get all users', async () => {
-		server = new APIServer(mockUserServiceFail);
-		await server.startServer(PORT);
 		try {
-			const serverReply = await superagent.get(
-				`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
+			await dbClearCollection(
+				validUsername,
+				validPassword,
+				validHost,
+				validAuthDB,
+				validDB,
+				validCollection
 			);
+			await superagent.get(`${HOST}:${PORT}/${BASE}/${ALL_USERS}`);
+			throw new Error(failedToThrow);
 		} catch (e) {
 			expect(e.message).toBe(NotFound);
 		}
 	});
 
-	it('Will throw an error on get all users', async () => {
-		server = new APIServer(mockUserServiceThrowError);
-		await server.startServer(PORT);
-		try {
-			const serverReply = await superagent.get(
-				`${HOST}:${PORT}/${BASE}/${ALL_USERS}`
-			);
-		} catch (e) {
-			expect(e.message).toBe(InternalServerError);
-		}
-	});
-
 	it('Will give out swagger docs', async () => {
-		server = new APIServer(mockUserService);
-		await server.startServer(PORT);
 		const serverReply = await superagent.get(
 			`${HOST}:${PORT}/${BASE}/${APIDOCS}`
 		);
 		delete serverReply.header.date;
 		expect(serverReply).toMatchSnapshot();
-	});*/
+	});
+
+	it('Will not give an error if stop server is called when server is not running', async () => {
+		await server.stopServer();
+		await server.stopServer();
+	});
 });
