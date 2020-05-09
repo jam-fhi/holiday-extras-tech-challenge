@@ -3,20 +3,20 @@ module.exports = {
 		browser: true,
 		es6: true,
 		node: true,
-		jest: true
+		jest: true,
 	},
 	extends: 'eslint:recommended',
 	globals: {
 		Atomics: 'readonly',
-		SharedArrayBuffer: 'readonly'
+		SharedArrayBuffer: 'readonly',
 	},
 	parser: 'babel-eslint',
 	parserOptions: {
 		ecmaFeatures: {
-			jsx: true
+			jsx: true,
 		},
 		ecmaVersion: 2018,
-		sourceType: 'module'
+		sourceType: 'module',
 	},
 	rules: {
 		'eol-last': 2,
@@ -24,8 +24,8 @@ module.exports = {
 		'no-mixed-requires': 2,
 		'no-multi-spaces': 2,
 		'no-underscore-dangle': 0,
-		quotes: [2, 'single'],
+		quotes: [2, 'single', { avoidEscape: true }],
 		semi: [2, 'always'],
-		strict: 0
-	}
+		strict: 0,
+	},
 };

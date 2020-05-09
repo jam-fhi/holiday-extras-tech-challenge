@@ -16,18 +16,14 @@ export default class MongoConnection {
 			useNewUrlParser: true,
 			numberOfRetries: 0,
 			useUnifiedTopology: true,
-			connectTimeoutMS: 500
+			connectTimeoutMS: 500,
 		};
 	}
 
 	async getMongoDBConnection() {
 		const client = new MongoClient(this.url, this.getConnectionOptions());
-		try {
-			await client.connect();
-			return client;
-		} catch (e) {
-			throw e;
-		}
+		await client.connect();
+		return client;
 	}
 
 	async findOne(collection, query) {
@@ -38,8 +34,6 @@ export default class MongoConnection {
 				.collection(collection)
 				.findOne(query);
 			return foundDocument;
-		} catch (e) {
-			throw e;
 		} finally {
 			await dbConn.close();
 		}
@@ -54,8 +48,6 @@ export default class MongoConnection {
 				.find(query)
 				.toArray();
 			return allDocs;
-		} catch (e) {
-			throw e;
 		} finally {
 			await dbConn.close();
 		}
@@ -69,8 +61,6 @@ export default class MongoConnection {
 				.collection(collection)
 				.updateOne(query, { $set: update });
 			return updateDocument.result.nModified == 1 ? true : false;
-		} catch (e) {
-			throw e;
 		} finally {
 			await dbConn.close();
 		}
@@ -84,8 +74,6 @@ export default class MongoConnection {
 				.collection(collection)
 				.deleteOne(query);
 			return deleteDocument.result.n == 1 ? true : false;
-		} catch (e) {
-			throw e;
 		} finally {
 			await dbConn.close();
 		}
@@ -94,12 +82,7 @@ export default class MongoConnection {
 	async insertOne(collection, insert) {
 		const dbConn = await this.getMongoDBConnection();
 		try {
-			await dbConn
-				.db(this.db)
-				.collection(collection)
-				.insertOne(insert);
-		} catch (e) {
-			throw e;
+			await dbConn.db(this.db).collection(collection).insertOne(insert);
 		} finally {
 			await dbConn.close();
 		}
