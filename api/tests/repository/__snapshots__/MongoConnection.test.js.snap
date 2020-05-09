@@ -1,45 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MongoConnection Will create a client object 1`] = `
-Object {
-  "close": [MockFunction],
-  "db": [MockFunction],
-  "findOne": [MockFunction],
-}
-`;
-
-exports[`MongoConnection Will delete a document 1`] = `
-Object {
-  "document": "found",
-}
-`;
-
-exports[`MongoConnection Will find all documents 1`] = `
-Array [
-  Object {
-    "document": "found",
-  },
-  Object {
-    "document": "found",
-  },
-]
-`;
-
 exports[`MongoConnection Will find one result 1`] = `
 Object {
-  "document": "found",
-}
-`;
-
-exports[`MongoConnection Will insert the database with new values 1`] = `
-Object {
-  "document": "found",
+  "about": "I like cars",
+  "created": "2020-02-15T13:07:01.000Z",
+  "email": "sally@holextra.com",
+  "familyName": "Solomon",
+  "givenName": "Sally",
+  "id": 3,
+  "password": "password",
+  "token": "",
 }
 `;
 
 exports[`MongoConnection Will return Mongo Connection options 1`] = `
 Object {
-  "numberOfRetries": 10,
+  "connectTimeoutMS": 500,
+  "numberOfRetries": 0,
   "useNewUrlParser": true,
   "useUnifiedTopology": true,
 }

@@ -1,84 +1,81 @@
 import { ObjectID } from 'mongodb';
 
 export default class DatabaseRepository {
-	constructor(mongoClient, db, collection) {
+	constructor(mongoClient, collection) {
 		this.mongoClient = mongoClient;
-		this.db = db;
 		this.collection = collection;
 	}
 
 	async getUserByEmailPassword(email, password) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.findOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
+		try {
+			const user = await this.mongoClient.findOne(this.collection, {
 				email,
 				password
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async getUserByEmail(email) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.findOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
+		try {
+			const user = await this.mongoClient.findOne(this.collection, {
 				email
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
+	}
+
+	async getAllUserByEmail(email) {
+		try {
+			const user = await this.mongoClient.findAllByQuery(this.collection, {
+				email
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async getUserByDBID(id) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.findOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
+		try {
+			const user = await this.mongoClient.findOne(this.collection, {
 				_id: ObjectID(id)
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async updateUser(_id, id, email, givenName, familyName, password, about) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.updateOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
-				_id: ObjectID(_id)
-			},
-			{
-				id,
-				email,
-				givenName,
-				familyName,
-				password,
-				about
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+		try {
+			const user = await this.mongoClient.updateOne(
+				this.collection,
+				{
+					_id: ObjectID(_id)
+				},
+				{
+					id,
+					email,
+					givenName,
+					familyName,
+					password,
+					about
+				}
+			);
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async insertUser(id, email, givenName, familyName, created, password, about) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.insertOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
+		try {
+			const user = await this.mongoClient.insertOne(this.collection, {
 				id,
 				email,
 				givenName,
@@ -86,52 +83,48 @@ export default class DatabaseRepository {
 				created,
 				password,
 				about
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async saveAuthToken(email, password, token) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.updateOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
-				email,
-				password
-			},
-			{
-				token
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+		try {
+			const user = await this.mongoClient.updateOne(
+				this.collection,
+				{
+					email,
+					password
+				},
+				{
+					token
+				}
+			);
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async deleteUser(_id) {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const user = await this.mongoClient.deleteOne(
-			dbConn,
-			this.db,
-			this.collection,
-			{
+		try {
+			const user = await this.mongoClient.deleteOne(this.collection, {
 				_id: ObjectID(_id)
-			}
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return user;
+			});
+			return user;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	async getAllUsers() {
-		const dbConn = await this.mongoClient.getMongoDBConnection();
-		const users = await this.mongoClient.findAll(
-			dbConn,
-			this.db,
-			this.collection
-		);
-		await this.mongoClient.closeConnection(dbConn);
-		return users;
+		try {
+			const users = await this.mongoClient.findAllByQuery(this.collection, {});
+			return users;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 }

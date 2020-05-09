@@ -1,78 +1,91 @@
+import { MongoClient } from 'mongodb';
+
 export default class MongoConnection {
-	constructor(mongoClient, username, password, host, authdb) {
+	constructor(username, password, host, authdb, db) {
 		this.username = username;
 		this.password = password;
 		this.host = host;
 		this.authDB = authdb;
-		this.mongoClient = mongoClient;
+		this.db = db;
+		this.port = 27017;
+		this.url = `mongodb://${this.username}:${this.password}@${this.host}:${this.port}/${this.db}?&authSource=${this.authDB}&socketTimeoutMS=500`;
 	}
 
 	getConnectionOptions() {
 		return {
 			useNewUrlParser: true,
-			numberOfRetries: 10,
-			useUnifiedTopology: true
+			numberOfRetries: 0,
+			useUnifiedTopology: true,
+			connectTimeoutMS: 500,
 		};
 	}
 
 	async getMongoDBConnection() {
-		return new Promise((resolve, reject) => {
-			this.mongoClient.connect(
-				`mongodb://${this.username}:${this.password}@${this.host}/${this.authDB}`,
-				this.getConnectionOptions(),
-				async (err, client) => {
-					if (!err) {
-						resolve(client);
-					} else {
-						reject(err);
-					}
-				}
-			);
-		});
+		const client = new MongoClient(this.url, this.getConnectionOptions());
+		await client.connect();
+		return client;
 	}
 
-	async findOne(dbConn, db, collection, query) {
-		const foundDocument = await dbConn
-			.db(db)
-			.collection(collection)
-			.findOne(query);
-		return foundDocument;
+	async findOne(collection, query) {
+		const dbConn = await this.getMongoDBConnection();
+		try {
+			const foundDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.findOne(query);
+			return foundDocument;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
-	async findAll(dbConn, db, collection) {
-		const allDocs = await dbConn
-			.db(db)
-			.collection(collection)
-			.find({})
-			.toArray();
-		return allDocs;
+	async findAllByQuery(collection, query) {
+		const dbConn = await this.getMongoDBConnection();
+		try {
+			const allDocs = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.find(query)
+				.toArray();
+			return allDocs;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
-	async updateOne(dbConn, db, collection, query, update) {
-		const updateDocument = await dbConn
-			.db(db)
-			.collection(collection)
-			.updateOne(query, { $set: update });
-		return updateDocument;
+	async updateOne(collection, query, update) {
+		const dbConn = await this.getMongoDBConnection();
+		try {
+			const updateDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.updateOne(query, { $set: update });
+			return updateDocument.result.nModified == 1 ? true : false;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
-	async deleteOne(dbConn, db, collection, query) {
-		const deleteDocument = await dbConn
-			.db(db)
-			.collection(collection)
-			.deleteOne(query);
-		return deleteDocument;
+	async deleteOne(collection, query) {
+		const dbConn = await this.getMongoDBConnection();
+		try {
+			const deleteDocument = await dbConn
+				.db(this.db)
+				.collection(collection)
+				.deleteOne(query);
+			return deleteDocument.result.n == 1 ? true : false;
+		} finally {
+			await dbConn.close();
+		}
 	}
 
-	async insertOne(dbConn, db, collection, insert) {
-		const insertDocument = await dbConn
-			.db(db)
-			.collection(collection)
-			.insertOne(insert);
-		return insertDocument;
-	}
-
-	async closeConnection(dbConn) {
-		await dbConn.close();
+	async insertOne(collection, insert) {
+		const dbConn = await this.getMongoDBConnection();
+		try {
+			await dbConn.db(this.db).collection(collection).insertOne(insert);
+		} finally {
+			await dbConn.close();
+		}
+		return true;
 	}
 }
