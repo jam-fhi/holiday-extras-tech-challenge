@@ -14,23 +14,22 @@ import {
 	validPwd,
 	invalidEmail,
 	invalidPwd,
-	invalidID,
-	validUser,
 	validUsername,
 	validPassword,
 	validHost,
 	validAuthDB,
 	validDB,
-	validDuplicateEmail,
 	validCreated,
 	invalidUnderscoreID,
 	invalidCollection,
+	validToken,
 } from '../fixture/CommonData';
 
 describe('User Service', () => {
 	const secretKey = 'TRFTS';
-	const validToken = 'abcd';
 	const validCollection = 'userServiceTest';
+	const validDuplicateEmail = 'tom@holextra.com';
+	const invalidID = -1;
 	const validLoginResult = true;
 	const invalidLoginResult = false;
 	const validUserResult = true;
@@ -46,6 +45,16 @@ describe('User Service', () => {
 	const invalidDeleteUser = false;
 	const invalidGetUser = null;
 	const invalidGetAllUser = false;
+
+	const validUser = {
+		id: 0,
+		email: 'henry@holextra.com',
+		givenName: 'Henry',
+		familyName: 'Solomon',
+		created: '2020-02-15T13:07:01.000Z',
+		password: 'password',
+		about: 'I like darts',
+	};
 
 	let mongoConn;
 	let userRepo;
