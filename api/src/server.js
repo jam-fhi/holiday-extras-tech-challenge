@@ -129,7 +129,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - application/json
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -213,7 +213,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - application/json
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
