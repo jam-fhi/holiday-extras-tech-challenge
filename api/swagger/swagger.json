@@ -96,7 +96,7 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
@@ -121,14 +121,14 @@
             "type": "string"
           },
           {
-            "name": "givenname",
+            "name": "givenName",
             "description": "User's given name",
             "in": "formData",
             "required": true,
             "type": "string"
           },
           {
-            "name": "familyname",
+            "name": "familyName",
             "description": "User's family name",
             "in": "formData",
             "required": true,
@@ -169,7 +169,7 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
