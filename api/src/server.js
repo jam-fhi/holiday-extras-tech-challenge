@@ -65,11 +65,11 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *     responses:
