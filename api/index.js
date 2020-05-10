@@ -2,7 +2,7 @@ import APIServer from './src/server';
 import { PORT } from './src/models/RouteConstants';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
-import MongoConnection from './src/repository/MongoConnection';
+import MongoConnection from './src/connection/MongoConnection';
 import UserRepository from './src/repository/UserRepository';
 import UserService from './src/services/UserService';
 

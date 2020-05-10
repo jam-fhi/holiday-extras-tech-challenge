@@ -1,7 +1,7 @@
 // Mongo exceptions take a long time to appear.
 jest.setTimeout(45000);
 
-import MongoConnection from '../../src/repository/MongoConnection';
+import MongoConnection from '../../src/connection/MongoConnection';
 import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
 import {
 	validUsername,

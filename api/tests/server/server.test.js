@@ -1,7 +1,7 @@
 import APIServer from '../../src/server';
 import superagent from 'superagent';
 import UserService from '../../src/services/UserService';
-import MongoConnection from '../../src/repository/MongoConnection';
+import MongoConnection from '../../src/connection/MongoConnection';
 import UserRepository from '../../src/repository/UserRepository';
 import {
 	dbSetup,

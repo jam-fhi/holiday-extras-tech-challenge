@@ -1,5 +1,5 @@
 import UserRepository from '../../src/repository/UserRepository';
-import MongoConnection from '../../src/repository/MongoConnection';
+import MongoConnection from '../../src/connection/MongoConnection';
 import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
 import {
 	validID,
