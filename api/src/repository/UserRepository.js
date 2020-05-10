@@ -10,7 +10,7 @@ export default class DatabaseRepository {
 		try {
 			const user = await this.mongoClient.findOne(this.collection, {
 				email,
-				password
+				password,
 			});
 			return user;
 		} catch (e) {
@@ -21,7 +21,7 @@ export default class DatabaseRepository {
 	async getUserByEmail(email) {
 		try {
 			const user = await this.mongoClient.findOne(this.collection, {
-				email
+				email,
 			});
 			return user;
 		} catch (e) {
@@ -32,7 +32,7 @@ export default class DatabaseRepository {
 	async getAllUserByEmail(email) {
 		try {
 			const user = await this.mongoClient.findAllByQuery(this.collection, {
-				email
+				email,
 			});
 			return user;
 		} catch (e) {
@@ -43,7 +43,7 @@ export default class DatabaseRepository {
 	async getUserByDBID(id) {
 		try {
 			const user = await this.mongoClient.findOne(this.collection, {
-				_id: ObjectID(id)
+				_id: ObjectID(id),
 			});
 			return user;
 		} catch (e) {
@@ -56,7 +56,7 @@ export default class DatabaseRepository {
 			const user = await this.mongoClient.updateOne(
 				this.collection,
 				{
-					_id: ObjectID(_id)
+					_id: ObjectID(_id),
 				},
 				{
 					id,
@@ -64,7 +64,7 @@ export default class DatabaseRepository {
 					givenName,
 					familyName,
 					password,
-					about
+					about,
 				}
 			);
 			return user;
@@ -82,7 +82,7 @@ export default class DatabaseRepository {
 				familyName,
 				created,
 				password,
-				about
+				about,
 			});
 			return user;
 		} catch (e) {
@@ -96,10 +96,10 @@ export default class DatabaseRepository {
 				this.collection,
 				{
 					email,
-					password
+					password,
 				},
 				{
-					token
+					token,
 				}
 			);
 			return user;
@@ -111,7 +111,7 @@ export default class DatabaseRepository {
 	async deleteUser(_id) {
 		try {
 			const user = await this.mongoClient.deleteOne(this.collection, {
-				_id: ObjectID(_id)
+				_id: ObjectID(_id),
 			});
 			return user;
 		} catch (e) {
