@@ -13,6 +13,7 @@ import {
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
 import cors from 'cors';
+import multer from 'multer';
 
 export default class APIServer {
 	constructor(userService) {
@@ -29,6 +30,8 @@ export default class APIServer {
 	}
 
 	async buildAPI() {
+		const upload = multer();
+
 		/**
 		 * @swagger
 		 *
@@ -65,11 +68,11 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *     responses:
@@ -98,11 +101,11 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *     responses:
@@ -129,7 +132,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - application/json
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: _id
 		 *         description: The mongo database id for the user
@@ -174,35 +177,39 @@ export default class APIServer {
 		 *       400:
 		 *         description: details failed validation
 		 */
-		await this.server.patch(`/${BASE}/${UPDATE}`, async (req, res) => {
-			if (
-				this.userService.validateUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				)
-			) {
-				const userUpdated = await this.userService.updateUser(
-					req.body._id,
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				);
-				if (userUpdated) {
-					res.send(req.body);
+		await this.server.patch(
+			`/${BASE}/${UPDATE}`,
+			upload.none(),
+			async (req, res) => {
+				if (
+					this.userService.validateUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					)
+				) {
+					const userUpdated = await this.userService.updateUser(
+						req.body._id,
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					);
+					if (userUpdated) {
+						res.send(req.body);
+					} else {
+						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					}
 				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 				}
-			} else {
-				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
-		});
+		);
 
 		/**
 		 * @swagger
@@ -213,7 +220,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - application/json
+		 *       - multipart/form-data
 		 *     parameters:
 		 *       - name: id
 		 *         description: It was in the requirements, but mongo uses _id. It'll be a special number.
@@ -253,34 +260,38 @@ export default class APIServer {
 		 *       400:
 		 *         description: details failed validation
 		 */
-		await this.server.post(`/${BASE}/${REGISTER}`, async (req, res) => {
-			if (
-				this.userService.validateUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				)
-			) {
-				const userInserted = await this.userService.insertUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				);
-				if (userInserted) {
-					res.sendStatus(HttpStatusCodes.OK);
+		await this.server.post(
+			`/${BASE}/${REGISTER}`,
+			upload.none(),
+			async (req, res) => {
+				if (
+					this.userService.validateUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					)
+				) {
+					const userInserted = await this.userService.insertUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					);
+					if (userInserted) {
+						res.sendStatus(HttpStatusCodes.OK);
+					} else {
+						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					}
 				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 				}
-			} else {
-				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
-		});
+		);
 
 		/**
 		 * @swagger
@@ -291,16 +302,16 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     parameters:
 		 *       - name: email
 		 *         description: Email address to use for login.
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *       - name: password
 		 *         description: User's password.
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *     responses:
@@ -349,7 +360,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     responses:
 		 *       200:
 		 *         description: Display api docs

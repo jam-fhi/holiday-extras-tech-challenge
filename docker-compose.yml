@@ -1,5 +1,9 @@
 version: '3'
 services:
+  swagger:
+    image: swaggerapi/swagger-editor
+    ports:
+      - '80:8080'
   mongodb:
     image: mongo:latest
     env_file:

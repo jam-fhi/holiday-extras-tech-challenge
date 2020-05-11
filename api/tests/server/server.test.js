@@ -10,7 +10,6 @@ import {
 } from '../fixture/mongoDBFixture';
 import HttpStatusCodes from 'http-status-codes';
 import {
-	HOST,
 	LOGIN,
 	BASE,
 	APIDOCS,
@@ -50,6 +49,7 @@ describe('The host server will provide access to backend functionality', () => {
 	const headerEmail = 'email';
 	const headerPassword = 'password';
 	const PORT = 3002;
+	const HOST = 'http://localhost';
 
 	const duplicateUser = {
 		id: validID,

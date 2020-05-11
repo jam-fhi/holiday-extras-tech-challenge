@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "description": "Technical Challenge for Holiday Extras"
   },
-  "host": "localhost",
+  "host": "localhost:3001",
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
@@ -37,13 +37,13 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "text/plain; charset=utf-8"
         ],
         "parameters": [
           {
             "name": "_id",
             "description": "The mongo database id for the user",
-            "in": "formData",
+            "in": "header",
             "required": true,
             "type": "string"
           }
@@ -68,13 +68,13 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "text/plain; charset=utf-8"
         ],
         "parameters": [
           {
             "name": "_id",
             "description": "The mongo database id for the user",
-            "in": "formData",
+            "in": "header",
             "required": true,
             "type": "string"
           }
@@ -96,7 +96,7 @@
           "application/json"
         ],
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -121,14 +121,14 @@
             "type": "string"
           },
           {
-            "name": "givenName",
+            "name": "givenname",
             "description": "User's given name",
             "in": "formData",
             "required": true,
             "type": "string"
           },
           {
-            "name": "familyName",
+            "name": "familyname",
             "description": "User's family name",
             "in": "formData",
             "required": true,
@@ -169,7 +169,7 @@
           "application/json"
         ],
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -235,20 +235,20 @@
           "application/json"
         ],
         "consumes": [
-          "multipart/form-data"
+          "text/plain; charset=utf-8"
         ],
         "parameters": [
           {
             "name": "email",
             "description": "Email address to use for login.",
-            "in": "formData",
+            "in": "header",
             "required": true,
             "type": "string"
           },
           {
             "name": "password",
             "description": "User's password.",
-            "in": "formData",
+            "in": "header",
             "required": true,
             "type": "string"
           }
