@@ -260,34 +260,38 @@ export default class APIServer {
 		 *       400:
 		 *         description: details failed validation
 		 */
-		await this.server.post(`/${BASE}/${REGISTER}`, async (req, res) => {
-			if (
-				this.userService.validateUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				)
-			) {
-				const userInserted = await this.userService.insertUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				);
-				if (userInserted) {
-					res.sendStatus(HttpStatusCodes.OK);
+		await this.server.post(
+			`/${BASE}/${REGISTER}`,
+			upload.none(),
+			async (req, res) => {
+				if (
+					this.userService.validateUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					)
+				) {
+					const userInserted = await this.userService.insertUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					);
+					if (userInserted) {
+						res.sendStatus(HttpStatusCodes.OK);
+					} else {
+						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					}
 				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 				}
-			} else {
-				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
-		});
+		);
 
 		/**
 		 * @swagger
