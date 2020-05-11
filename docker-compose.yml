@@ -18,6 +18,8 @@ services:
       - mongodb
   holiday_api:
     build: ./api/
+    volumes:
+      - ./api:/usr/src/app
     ports:
       - $API_PORT:$API_PORT
     links:
