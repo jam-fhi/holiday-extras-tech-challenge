@@ -13,6 +13,7 @@ import {
 import HttpStatusCodes from 'http-status-codes';
 import SWAGGER from '../swagger/swagger.json';
 import cors from 'cors';
+import multer from 'multer';
 
 export default class APIServer {
 	constructor(userService) {
@@ -29,6 +30,8 @@ export default class APIServer {
 	}
 
 	async buildAPI() {
+		const upload = multer();
+
 		/**
 		 * @swagger
 		 *
@@ -174,35 +177,39 @@ export default class APIServer {
 		 *       400:
 		 *         description: details failed validation
 		 */
-		await this.server.patch(`/${BASE}/${UPDATE}`, async (req, res) => {
-			if (
-				this.userService.validateUser(
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				)
-			) {
-				const userUpdated = await this.userService.updateUser(
-					req.body._id,
-					req.body.id,
-					req.body.email,
-					req.body.givenname,
-					req.body.familyname,
-					req.body.password,
-					req.body.about
-				);
-				if (userUpdated) {
-					res.send(req.body);
+		await this.server.patch(
+			`/${BASE}/${UPDATE}`,
+			upload.none(),
+			async (req, res) => {
+				if (
+					this.userService.validateUser(
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					)
+				) {
+					const userUpdated = await this.userService.updateUser(
+						req.body._id,
+						req.body.id,
+						req.body.email,
+						req.body.givenname,
+						req.body.familyname,
+						req.body.password,
+						req.body.about
+					);
+					if (userUpdated) {
+						res.send(req.body);
+					} else {
+						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					}
 				} else {
-					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+					res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 				}
-			} else {
-				res.sendStatus(HttpStatusCodes.BAD_REQUEST);
 			}
-		});
+		);
 
 		/**
 		 * @swagger

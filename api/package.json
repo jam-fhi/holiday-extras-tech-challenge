@@ -21,6 +21,7 @@
 		"joi": "^14.3.1",
 		"jsonwebtoken": "^8.5.1",
 		"mongodb": "^3.5.3",
+		"multer": "^1.4.2",
 		"nodemon": "^2.0.2",
 		"swagger-jsdoc": "^3.5.0"
 	},
