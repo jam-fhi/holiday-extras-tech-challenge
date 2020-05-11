@@ -302,16 +302,16 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     parameters:
 		 *       - name: email
 		 *         description: Email address to use for login.
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *       - name: password
 		 *         description: User's password.
-		 *         in: formData
+		 *         in: header
 		 *         required: true
 		 *         type: string
 		 *     responses:
@@ -360,7 +360,7 @@ export default class APIServer {
 		 *     produces:
 		 *       - application/json
 		 *     consumes:
-		 *       - multipart/form-data
+		 *       - text/plain; charset=utf-8
 		 *     responses:
 		 *       200:
 		 *         description: Display api docs
