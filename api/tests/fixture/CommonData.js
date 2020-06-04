@@ -20,7 +20,6 @@ export const validDeleteResult = true;
 export const invalidDeleteResult = false;
 export const validAllDocsLength = 4;
 export const secretKey = 'TRFTS';
-export const failedToThrow = 'Failed to throw';
 export const validNotExistingUser = {
 	id: 1,
 	email: 'jerry@holextra.com',

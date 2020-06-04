@@ -35,7 +35,6 @@ import {
 	validDB,
 	invalidUnderscoreID,
 	secretKey,
-	failedToThrow,
 	validNotExistingUser,
 } from '../fixture/CommonData';
 
@@ -125,7 +124,7 @@ describe('The host server will provide access to backend functionality', () => {
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set(headerEmail, validNotExistingUser.email)
 				.set(headerPassword, validPwd);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(Unauthorized);
 		}
@@ -137,7 +136,7 @@ describe('The host server will provide access to backend functionality', () => {
 				.post(`${HOST}:${PORT}/${BASE}/${LOGIN}`)
 				.set(headerEmail, invalidEmail)
 				.set(headerPassword, invalidPwd);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -157,7 +156,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
 				.send(badDataUser);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -168,7 +167,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.post(`${HOST}:${PORT}/${BASE}/${REGISTER}`)
 				.send(duplicateUser);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
@@ -207,7 +206,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
 				.send(updateUser);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
@@ -228,7 +227,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.patch(`${HOST}:${PORT}/${BASE}/${UPDATE}`)
 				.send(updateUser);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(BadRequest);
 		}
@@ -247,7 +246,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.delete(`${HOST}:${PORT}/${BASE}/${DELETE}`)
 				.set(headerUnderscoreID, invalidUnderscoreID);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
@@ -267,7 +266,7 @@ describe('The host server will provide access to backend functionality', () => {
 			await superagent
 				.get(`${HOST}:${PORT}/${BASE}/${USER}`)
 				.set(headerUnderscoreID, invalidUnderscoreID);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(InternalServerError);
 		}
@@ -292,7 +291,7 @@ describe('The host server will provide access to backend functionality', () => {
 				validCollection
 			);
 			await superagent.get(`${HOST}:${PORT}/${BASE}/${ALL_USERS}`);
-			throw new Error(failedToThrow);
+			fail();
 		} catch (e) {
 			expect(e.message).toBe(NotFound);
 		}
