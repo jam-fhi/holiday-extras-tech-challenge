@@ -26,6 +26,7 @@ import {
 	secretKey,
 	validNotExistingUser,
 } from '../fixture/CommonData';
+import { fail } from 'assert';
 
 describe('User Service', () => {
 	const validCollection = 'userServiceTest';
@@ -45,7 +46,7 @@ describe('User Service', () => {
 	const validDeleteUser = true;
 	const invalidDeleteUser = false;
 	const invalidGetUser = null;
-	const invalidGetAllUser = false;
+	const invalidCollectionError = 'collection name must be a String';
 
 	let mongoConn;
 	let userRepo;
@@ -276,9 +277,13 @@ describe('User Service', () => {
 	});
 
 	it('Will fail to get all users', async () => {
-		const badUserRepo = new UserRepository(mongoConn, invalidCollection);
-		const badUserService = new UserService(badUserRepo, secretKey);
-		const users = await badUserService.getAllUsers();
-		expect(users).toBe(invalidGetAllUser);
+		try {
+			const badUserRepo = new UserRepository(mongoConn, invalidCollection);
+			const badUserService = new UserService(badUserRepo, secretKey);
+			await badUserService.getAllUsers();
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
 	});
 });

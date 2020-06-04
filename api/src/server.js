@@ -51,11 +51,15 @@ export default class APIServer {
 		 *         description: not found error
 		 */
 		await this.server.get(`/${BASE}/${ALL_USERS}`, async (req, res) => {
-			const users = await this.userService.getAllUsers();
-			if (users) {
-				res.json(users);
-			} else {
-				res.sendStatus(HttpStatusCodes.NOT_FOUND);
+			try {
+				const users = await this.userService.getAllUsers();
+				if (users) {
+					res.json(users);
+				} else {
+					res.sendStatus(HttpStatusCodes.NOT_FOUND);
+				}
+			} catch (e) {
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 			}
 		});
 
@@ -84,11 +88,15 @@ export default class APIServer {
 		 *         description: not found error
 		 */
 		await this.server.get(`/${BASE}/${USER}`, async (req, res) => {
-			const user = await this.userService.getUser(req.headers._id);
-			if (user) {
-				res.json(user);
-			} else {
-				res.sendStatus(HttpStatusCodes.NOT_FOUND);
+			try {
+				const user = await this.userService.getUser(req.headers._id);
+				if (user) {
+					res.json(user);
+				} else {
+					res.sendStatus(HttpStatusCodes.NOT_FOUND);
+				}
+			} catch (e) {
+				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 			}
 		});
 
@@ -115,10 +123,14 @@ export default class APIServer {
 		 *         description: internal server error
 		 */
 		await this.server.delete(`/${BASE}/${DELETE}`, async (req, res) => {
-			const userDeleted = await this.userService.deleteUser(req.headers._id);
-			if (userDeleted) {
-				res.sendStatus(HttpStatusCodes.OK);
-			} else {
+			try {
+				const userDeleted = await this.userService.deleteUser(req.headers._id);
+				if (userDeleted) {
+					res.sendStatus(HttpStatusCodes.OK);
+				} else {
+					res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+				}
+			} catch (e) {
 				res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 			}
 		});
@@ -191,18 +203,22 @@ export default class APIServer {
 						req.body.about
 					)
 				) {
-					const userUpdated = await this.userService.updateUser(
-						req.body._id,
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					);
-					if (userUpdated) {
-						res.send(req.body);
-					} else {
+					try {
+						const userUpdated = await this.userService.updateUser(
+							req.body._id,
+							req.body.id,
+							req.body.email,
+							req.body.givenname,
+							req.body.familyname,
+							req.body.password,
+							req.body.about
+						);
+						if (userUpdated) {
+							res.send(req.body);
+						} else {
+							res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+						}
+					} catch (e) {
 						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 					}
 				} else {
@@ -274,17 +290,21 @@ export default class APIServer {
 						req.body.about
 					)
 				) {
-					const userInserted = await this.userService.insertUser(
-						req.body.id,
-						req.body.email,
-						req.body.givenname,
-						req.body.familyname,
-						req.body.password,
-						req.body.about
-					);
-					if (userInserted) {
-						res.sendStatus(HttpStatusCodes.OK);
-					} else {
+					try {
+						const userInserted = await this.userService.insertUser(
+							req.body.id,
+							req.body.email,
+							req.body.givenname,
+							req.body.familyname,
+							req.body.password,
+							req.body.about
+						);
+						if (userInserted) {
+							res.sendStatus(HttpStatusCodes.OK);
+						} else {
+							res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+						}
+					} catch (e) {
 						res.sendStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 					}
 				} else {

@@ -269,7 +269,7 @@ describe('The host server will provide access to backend functionality', () => {
 				.set(headerUnderscoreID, invalidUnderscoreID);
 			throw new Error(failedToThrow);
 		} catch (e) {
-			expect(e.message).toBe(NotFound);
+			expect(e.message).toBe(InternalServerError);
 		}
 	});
 
