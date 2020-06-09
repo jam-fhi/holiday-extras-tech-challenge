@@ -4,7 +4,11 @@ jest.setTimeout(45000);
 import UserService from '../../src/services/UserService';
 import MongoConnection from '../../src/connection/MongoConnection';
 import UserRepository from '../../src/repository/UserRepository';
-import { dbSetup, dbTeardown } from '../fixture/mongoDBFixture';
+import {
+	dbSetup,
+	dbTeardown,
+	dbClearCollection,
+} from '../fixture/mongoDBFixture';
 import {
 	validID,
 	validGivenName,
@@ -25,6 +29,7 @@ import {
 	validToken,
 	secretKey,
 	validNotExistingUser,
+	invalidCollectionError,
 } from '../fixture/CommonData';
 import { fail } from 'assert';
 
@@ -46,11 +51,13 @@ describe('User Service', () => {
 	const validDeleteUser = true;
 	const invalidDeleteUser = false;
 	const invalidGetUser = null;
-	const invalidCollectionError = 'collection name must be a String';
+	const noUsersCount = 0;
 
 	let mongoConn;
 	let userRepo;
 	let userService;
+	let badUserRepo;
+	let badUserService;
 
 	beforeEach(async () => {
 		await dbSetup(
@@ -68,6 +75,8 @@ describe('User Service', () => {
 			validAuthDB,
 			validDB
 		);
+		badUserRepo = new UserRepository(mongoConn, invalidCollection);
+		badUserService = new UserService(badUserRepo, secretKey);
 		userRepo = new UserRepository(mongoConn, validCollection);
 		userService = new UserService(userRepo, secretKey);
 	});
@@ -106,6 +115,15 @@ describe('User Service', () => {
 	it('Will return false for an invalid email on login', async () => {
 		const failLogin = await userService.doLogin(validEmail, invalidPwd);
 		expect(failLogin).toBe(invalidLoginResult);
+	});
+
+	it('Will fail to login by throwing an error', async () => {
+		try {
+			await badUserService.doLogin(validEmail, validPwd);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
 	});
 
 	it('Will validate valid emails and password successfully', () => {
@@ -170,6 +188,15 @@ describe('User Service', () => {
 		expect(savedToken).toBe(invalidSaveUserToken);
 	});
 
+	it('Will fail to save an auth token by throwing an error', async () => {
+		try {
+			await badUserService.saveToken(validEmail, validPassword, validToken);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
+	});
+
 	it('Will insert a new user', async () => {
 		const user = await userService.insertUser(
 			validNotExistingUser.id,
@@ -192,6 +219,22 @@ describe('User Service', () => {
 			validNotExistingUser.about
 		);
 		expect(user).toBe(invalidUserResult);
+	});
+
+	it('Will fail to save a new user by throwing an error', async () => {
+		try {
+			await badUserService.insertUser(
+				validID,
+				validEmail,
+				validGivenName,
+				validFamilyName,
+				validPassword,
+				validAbout
+			);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
 	});
 
 	it('Will find a duplicate user by email', async () => {
@@ -218,6 +261,16 @@ describe('User Service', () => {
 			validEmail
 		);
 		expect(user).toBe(invalidDuplicateByEmail);
+	});
+
+	it('Will fail to find a duplicated user by throwing an error', async () => {
+		try {
+			const userByEmail = await userRepo.getUserByEmail(validEmail);
+			await badUserService.isUserEmailDuplicated(userByEmail._id, validEmail);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
 	});
 
 	it('Will update a user', async () => {
@@ -248,6 +301,24 @@ describe('User Service', () => {
 		expect(user).toBe(invalidUserUpdate);
 	});
 
+	it('Will fail to update a user by throwing an error', async () => {
+		try {
+			const userByEmail = await userRepo.getUserByEmail(validEmail);
+			await badUserService.updateUser(
+				userByEmail._id,
+				validNotExistingUser.id,
+				validDuplicateEmail,
+				validNotExistingUser.givenname,
+				validNotExistingUser.familyname,
+				validNotExistingUser.password,
+				validNotExistingUser.about
+			);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
+	});
+
 	it('Will delete a user', async () => {
 		const userByEmail = await userRepo.getUserByEmail(validEmail);
 		const user = await userService.deleteUser(userByEmail._id);
@@ -257,6 +328,15 @@ describe('User Service', () => {
 	it('Will fail to delete a user', async () => {
 		const user = await userService.deleteUser(invalidUnderscoreID);
 		expect(user).toBe(invalidDeleteUser);
+	});
+
+	it('Will fail to delete a user by throwing an error', async () => {
+		try {
+			await badUserService.deleteUser(invalidUnderscoreID);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
 	});
 
 	it('Will get a user', async () => {
@@ -271,15 +351,35 @@ describe('User Service', () => {
 		expect(user).toBe(invalidGetUser);
 	});
 
+	it('Will fail to get a user by throwing an error', async () => {
+		try {
+			await badUserService.getUser(invalidUnderscoreID);
+			fail();
+		} catch (e) {
+			expect(e.message).toBe(invalidCollectionError);
+		}
+	});
+
 	it('Will get all users', async () => {
 		const users = await userService.getAllUsers();
 		expect(users).toMatchSnapshot();
 	});
 
+	it('Will return an empty array with no users', async () => {
+		await dbClearCollection(
+			validUsername,
+			validPassword,
+			validHost,
+			validAuthDB,
+			validDB,
+			validCollection
+		);
+		const users = await userService.getAllUsers();
+		expect(users.length).toBe(noUsersCount);
+	});
+
 	it('Will fail to get all users', async () => {
 		try {
-			const badUserRepo = new UserRepository(mongoConn, invalidCollection);
-			const badUserService = new UserService(badUserRepo, secretKey);
 			await badUserService.getAllUsers();
 			fail();
 		} catch (e) {

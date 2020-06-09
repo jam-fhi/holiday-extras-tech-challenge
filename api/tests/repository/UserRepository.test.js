@@ -24,6 +24,7 @@ import {
 	invalidDeleteResult,
 	validAllDocsLength,
 	invalidCollection,
+	invalidCollectionError,
 } from '../fixture/CommonData';
 import { fail } from 'assert';
 
@@ -31,7 +32,6 @@ describe('User Repository', () => {
 	const validCollection = 'repoTest';
 	const validUpdateByUnderscoreId = true;
 	const invalidUpdateByUserscoreId = false;
-	const invalidCollectionError = 'collection name must be a String';
 
 	let userRepo;
 	let badUserRepo;

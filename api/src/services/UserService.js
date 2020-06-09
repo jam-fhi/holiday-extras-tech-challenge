@@ -132,17 +132,12 @@ export default class UserService {
 
 	async getAllUsers() {
 		const users = await this.userRepo.getAllUsers();
-		if (users) {
-			if (users.length > 0) {
-				const displayUsers = users.map((user) => {
-					return {
-						name: `${user.givenName} ${user.familyName}`,
-						about: user.about,
-					};
-				});
-				return displayUsers;
-			}
-		}
-		return false;
+		const displayUsers = users.map((user) => {
+			return {
+				name: `${user.givenName} ${user.familyName}`,
+				about: user.about,
+			};
+		});
+		return displayUsers;
 	}
 }

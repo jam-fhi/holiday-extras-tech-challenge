@@ -20,6 +20,7 @@ export const validDeleteResult = true;
 export const invalidDeleteResult = false;
 export const validAllDocsLength = 4;
 export const secretKey = 'TRFTS';
+export const invalidCollectionError = 'collection name must be a String';
 export const validNotExistingUser = {
 	id: 1,
 	email: 'jerry@holextra.com',
