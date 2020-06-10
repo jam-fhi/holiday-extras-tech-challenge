@@ -2,9 +2,10 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 
 export default class UserService {
-	constructor(userRepo, secretKey) {
+	constructor(userRepo, secretKey, pino) {
 		this.userRepo = userRepo;
 		this.secretKey = secretKey;
+		this.pino = pino;
 	}
 
 	getUserValidationSchema() {
@@ -48,7 +49,9 @@ export default class UserService {
 
 	isValid(error, value) {
 		if (error) {
-			console.log(error.details, value);
+			this.pino().error(
+				`${JSON.stringify(error.details)} ${JSON.stringify(value)}`
+			);
 			return false;
 		}
 		return true;
