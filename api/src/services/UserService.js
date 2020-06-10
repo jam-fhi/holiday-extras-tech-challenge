@@ -2,9 +2,10 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 
 export default class UserService {
-	constructor(userRepo, secretKey) {
+	constructor(userRepo, secretKey, pino) {
 		this.userRepo = userRepo;
 		this.secretKey = secretKey;
+		this.pino = pino;
 	}
 
 	getUserValidationSchema() {
@@ -48,7 +49,9 @@ export default class UserService {
 
 	isValid(error, value) {
 		if (error) {
-			console.log(error.details, value);
+			this.pino().error(
+				`${JSON.stringify(error.details)} ${JSON.stringify(value)}`
+			);
 			return false;
 		}
 		return true;
@@ -132,17 +135,12 @@ export default class UserService {
 
 	async getAllUsers() {
 		const users = await this.userRepo.getAllUsers();
-		if (users) {
-			if (users.length > 0) {
-				const displayUsers = users.map((user) => {
-					return {
-						name: `${user.givenName} ${user.familyName}`,
-						about: user.about,
-					};
-				});
-				return displayUsers;
-			}
-		}
-		return false;
+		const displayUsers = users.map((user) => {
+			return {
+				name: `${user.givenName} ${user.familyName}`,
+				about: user.about,
+			};
+		});
+		return displayUsers;
 	}
 }

@@ -45,24 +45,24 @@ Object {
 `;
 
 exports[`The host server will provide access to backend functionality Will get all users 1`] = `
-Object {
-  "header": Object {
-    "access-control-allow-origin": "*",
-    "connection": "close",
-    "content-length": "189",
-    "content-type": "application/json; charset=utf-8",
-    "etag": "W/\\"bd-Ikhq8Eb2SsAvoLE4oYy7wLzjcwI\\"",
-    "x-powered-by": "Express",
+Array [
+  Object {
+    "about": "I like music",
+    "name": "Tom Solomon",
   },
-  "req": Object {
-    "data": undefined,
-    "headers": Object {},
-    "method": "GET",
-    "url": "http://localhost:3002/api/allusers",
+  Object {
+    "about": "I like films",
+    "name": "Dick Solomon",
   },
-  "status": 200,
-  "text": "[{\\"name\\":\\"Tom Solomon\\",\\"about\\":\\"I like music\\"},{\\"name\\":\\"Dick Solomon\\",\\"about\\":\\"I like films\\"},{\\"name\\":\\"Harry Solomon\\",\\"about\\":\\"I like books\\"},{\\"name\\":\\"Sally Solomon\\",\\"about\\":\\"I like cars\\"}]",
-}
+  Object {
+    "about": "I like books",
+    "name": "Harry Solomon",
+  },
+  Object {
+    "about": "I like cars",
+    "name": "Sally Solomon",
+  },
+]
 `;
 
 exports[`The host server will provide access to backend functionality Will give out swagger docs 1`] = `
@@ -108,6 +108,8 @@ Object {
   "text": undefined,
 }
 `;
+
+exports[`The host server will provide access to backend functionality Will return an empty array when there are no users 1`] = `Array []`;
 
 exports[`The host server will provide access to backend functionality Will update a user 1`] = `
 Object {
