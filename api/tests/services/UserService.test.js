@@ -4,6 +4,7 @@ jest.setTimeout(45000);
 import UserService from '../../src/services/UserService';
 import MongoConnection from '../../src/connection/MongoConnection';
 import UserRepository from '../../src/repository/UserRepository';
+import { pino } from '../../src/services/logger';
 import {
 	dbSetup,
 	dbTeardown,
@@ -76,9 +77,9 @@ describe('User Service', () => {
 			validDB
 		);
 		badUserRepo = new UserRepository(mongoConn, invalidCollection);
-		badUserService = new UserService(badUserRepo, secretKey);
+		badUserService = new UserService(badUserRepo, secretKey, pino);
 		userRepo = new UserRepository(mongoConn, validCollection);
-		userService = new UserService(userRepo, secretKey);
+		userService = new UserService(userRepo, secretKey, pino);
 	});
 
 	afterEach(async () => {
